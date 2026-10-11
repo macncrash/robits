@@ -1,0 +1,5 @@
+*.step -diff linguist-generated
+*.stp  -diff linguist-generated
+*.stl  binary
+*.dxf  -diff
+*.png  binary

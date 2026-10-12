@@ -1,7 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Open CASCADE Model'),'2;1');
-FILE_NAME('Open CASCADE Shape Model','2026-10-11T17:19:09',('macncrash'),(
+FILE_NAME('Open CASCADE Shape Model','2026-10-12T01:47:34',('macncrash'),(
     'Open CASCADE'),'Open CASCADE STEP processor 7.9','Open CASCADE 7.9'
   ,'Unknown');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
@@ -18339,7 +18339,7 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #15742 = ITEM_DEFINED_TRANSFORMATION('','',#11,#15);
 #15743 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #15744);
-#15744 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('28','Encoder cap (knurled)','',
+#15744 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('31','Encoder cap (knurled)','',
   #5,#27,$);
 #15745 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#29));
 ENDSEC;

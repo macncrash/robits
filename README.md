@@ -22,6 +22,7 @@ Every project folder follows the same layout:
   README.md     what it is, how the design was inferred, parts list, caveats
   images/       the reference image and renders of the model
   source/       parametric CAD source (CadQuery / Python), one file per component
+  analysis/     stress / strain studies and hand calculations, where done
   exports/      neutral CAD files: STEP (assembly and per component), STL meshes, DXF where there are flat parts
 ```
 

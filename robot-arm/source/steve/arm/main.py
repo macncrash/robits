@@ -15,6 +15,8 @@ from components.base import base
 from components.turret import turret
 from components.upper_arm import upper_arm
 from components.forearm import forearm
+from components.upper_arm_collars import upper_arm_collars
+from components.forearm_collars import forearm_collars
 from components.wrist1 import wrist1
 from components.wrist2 import wrist2
 from components.tool import tool
@@ -22,12 +24,15 @@ from components.finger_l import finger_l
 from components.finger_r import finger_r
 from links import actuator
 from motion import add_motion
+from checks import add_checks
 
 design = Design("Six-axis robot arm (press3)")
 design.add(base)
 design.add(turret)
 design.add(upper_arm)
 design.add(forearm)
+design.add(upper_arm_collars)
+design.add(forearm_collars)
 design.add(wrist1)
 design.add(wrist2)
 design.add(tool)
@@ -43,4 +48,5 @@ design.add(actuator(diameter=90, length=90, pedestal=0), name="act_j5", at=((a5_
 design.add(actuator(diameter=90, length=85, pedestal=0), name="act_j6", at=((w2_x, w_y, a6_z), ("X", 180)))
 
 add_motion(design)
+add_checks(design)
 result = design.result()

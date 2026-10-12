@@ -41,8 +41,8 @@ REVOLUTE = [(n, a) for n, _, _, a in JOINTS if n.startswith("j")]
 INSTANCE_LINK = {
     "base": None, "act_j1": None,
     "turret": "j1", "act_j2": "j1",
-    "upper_arm": "j2", "act_j3": "j2",
-    "forearm": "j3", "act_j4": "j3",
+    "upper_arm": "j2", "upper_arm_collars": "j2", "act_j3": "j2",
+    "forearm": "j3", "forearm_collars": "j3", "act_j4": "j3",
     "wrist1": "j4", "act_j5": "j4",
     "wrist2": "j5", "act_j6": "j5",
     "tool": "j6", "finger_l": "grip_l", "finger_r": "grip_r",

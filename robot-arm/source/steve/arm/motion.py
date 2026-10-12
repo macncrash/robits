@@ -5,7 +5,7 @@ from params import shoulder_z, elbow_z, fore_len, w_y, w2_x, grip_stroke
 def add_motion(design):
     design.revolute("j1", "base", "turret", axis=((0, 0, 0), (0, 0, 1)), limits=(-180, 180))
     design.revolute("j2", "turret", "upper_arm", axis=((0, 0, shoulder_z), (0, 1, 0)), limits=(-110, 110))
-    design.revolute("j3", "upper_arm", "forearm", axis=((0, 0, elbow_z), (0, 1, 0)), limits=(-160, 160))
+    design.revolute("j3", "upper_arm", "forearm", axis=((0, 0, elbow_z), (0, 1, 0)), limits=(-160, 30))  # beyond +30 the wrist folds into the shoulder
     design.revolute("j4", "forearm", "wrist1", axis=((fore_len, 0, elbow_z), (0, 1, 0)), limits=(-180, 180))
     design.revolute("j5", "wrist1", "wrist2", axis=((0, w_y, elbow_z), (1, 0, 0)), limits=(-180, 180))
     design.revolute("j6", "wrist2", "tool", axis=((w2_x, w_y, 0), (0, 0, 1)), limits=(-360, 360))
@@ -13,6 +13,8 @@ def add_motion(design):
     design.slider("grip_r", "tool", "finger_r", axis=((0, 0, 0), (-1, 0, 0)), limits=(0, grip_stroke))
     design.couple("grip", {"grip_l": 1, "grip_r": 1}, limits=(0, grip_stroke))
 
+    design.rigid("ua_collars", "upper_arm", "upper_arm_collars")
+    design.rigid("fa_collars", "forearm", "forearm_collars")
     design.rigid("j1_stator", "base", "act_j1")
     design.rigid("j2_stator", "turret", "act_j2")
     design.rigid("j3_stator", "upper_arm", "act_j3")

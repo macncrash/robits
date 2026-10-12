@@ -10,4 +10,4 @@ grip_stroke = 30  # mm Travel of each finger
 elbow_z = shoulder_z + upper_len
 a5_x = fore_len + 95
 w2_x = fore_len + 156
-a6_z = elbow_z - 87.5
+a6_z = elbow_z - 89.5  # J6 sits 2 mm below the J5 housing (fit check: they touched)

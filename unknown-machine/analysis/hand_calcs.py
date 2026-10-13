@@ -62,6 +62,13 @@ preload = {"A2-70 stainless": 4.0e3, "8.8 steel": 7.0e3, "12.9 steel": 10.5e3}  
 slip = {k: n_screws * f * mu * r_pcd for k, f in preload.items()}
 engagement = 44 - 34.5                          # mm of M5 thread in the 6061 housing
 
+# ---- Two-piece carrier: front disk on the rear part's posts, 3 x ISO 10642 M4 on the 22.5 mm planet orbit ----
+r_orbit, n_disk_screws = m * (Zs + Zp) / 2 / 1000, 3     # m
+preload_m4 = 2.5e3                                        # N, A2-70 M4 at catalogue torque (≈ M5 value × stress-area ratio)
+T_disk_slip = n_disk_screws * preload_m4 * mu * r_orbit   # N·m the joint holds by friction alone
+T_carrier = T_out * K_share                               # worst case: all of it crosses the joint
+tau_pin_joint = F_pin / (math.pi * d_pin ** 2 / 4)        # MPa if a pin carries its planet's load across the joint
+
 # ---- Bearings (catalogue ratings, check the maker's datasheet) ----
 C0_61806, C0_6001 = 2.9e3, 2.36e3               # N static load ratings
 Fr_out, Fa_out, arm = 150.0, 100.0, 23.0         # N, N, mm overhung load case and its lever to the bearing
@@ -78,5 +85,7 @@ if __name__ == "__main__":
     for k, s in slip.items():
         print(f"Flange slip torque with {k} screws: {s:.1f} N·m vs {T_ring:.0f} N·m needed (x{s / T_ring:.2f})")
     print(f"M5 thread engagement in aluminium: {engagement:.1f} mm = {engagement / 5:.1f} d (aim >= 2 d)")
+    print(f"Carrier joint: 3 x M4 friction holds {T_disk_slip:.1f} N·m vs {T_carrier:.0f} N·m worst case"
+          f" (x{T_disk_slip / T_carrier:.2f}); planet pins as dowels: {tau_pin_joint:.0f} MPa shear each")
     print(f"Output bearing 61806 static: P0 {P0_out:.0f} N vs C0 {C0_61806:.0f} N (s0 {C0_61806 / P0_out:.0f});"
           f" tilting moment {M_out:.2f} N·m on one deep-groove row")

@@ -1,4 +1,4 @@
-"""Motor can: rear section, finned stator section, front section and bulkhead with the output-bearing seat."""
+"""Motor can: rear section, finned stator section, front section and bulkhead with the crossed-roller output-bearing seat."""
 import math
 
 from steve import Component
@@ -12,7 +12,7 @@ fins = ring(48, 42, 40, -26)                         # finned section, z -26..14
 for k in range(1, 9):
     fins = fins.cut(ring(48.1, 45, 2.5, -26 + 40 * k / 9 - 1.25))
 front = ring(56, 42, 22, 14)                         # front section, z 14..36 (clamp band sits here)
-bulkhead = ring(56, 17, 8, 36).cut(cyl(21, 7, 37))   # z 36..44, 61806 seat (42 mm) open to the front
+bulkhead = ring(56, 24, 13, 31).cut(cyl(30, 10, 34))   # z 31..44, CRBH 3510 crossed-roller seat (60 mm) open to the front
 body = shell.fuse(fins).fuse(front).fuse(bulkhead)
 for a in SCREW_ANGLES:                               # M5 tapped holes (tap drill 4.2) for the flange screws
     r = SCREW_PCD / 2

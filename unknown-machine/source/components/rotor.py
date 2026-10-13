@@ -11,4 +11,4 @@ for k in range(14):
     magnets = magnets.cut(turned(box(25.9, -0.3, -25, 27.5, 0.3, 13), 360 / 14 * k))
 rotor.add("magnets", magnets, op="new", name="Magnets")
 rotor.material("steel-s235jr", finish="machined")
-rotor.material("steel-s235jr", bodies=["magnets"], color="#8a8f99")  # NdFeB magnets: not in the library, steel stand-in
+rotor.material("steel-s235jr", bodies=["magnets"], color="#8a8f99")  # NdFeB grade SH (150 C) or UH (180 C): not in the library, steel stand-in

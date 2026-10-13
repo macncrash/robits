@@ -155,7 +155,9 @@ Output bearing 61806 static: P0 150 N vs C0 2900 N (s0 19); tilting moment 3.45 
 | Housing | OK | 3.6 MPa under the torque and bearing loads; first mode 5.1 kHz |
 | Vibration | OK at part level | Every part's first mode is above 3.4 kHz, against a 720 Hz gear mesh. The assembled system on its pedestal wasn't solved. |
 
-### Gear material change (after this analysis)
+## Design changes after this analysis
+
+### Gear material
 
 The gears were moved off S235 as the verdicts above call for. The STEVE library has no 16MnCr5 / 20MnCr5,
 so the nearest equivalent case-hardening steel was used:
@@ -169,6 +171,70 @@ The tooth-bending stresses in the table above don't change. They depend on geome
 practically the same for all these steels. Only the margins change: the 143 MPa sun peak is now about 5× below
 core yield instead of 1.6×, and the contact stress is well inside the carburised allowable. These figures are
 typical values; the supplier's data sheet and the heat treatment govern.
+
+### Planet needle bearings
+
+Each planet bore is now 10 mm and holds an HK0609 drawn-cup needle bearing (6 × 10 × 9) that runs directly on
+the hardened ISO 2338 pin. That replaces the plain journal (PV 2.4 MPa·m/s). The rim under the planet's teeth
+drops from 9.0 to 7.25 mm, still about 3× the 2.25 mm tooth height, so tooth bending is unaffected. Check the
+needle bearing's rating against the 341 N planet load and about 1600 rpm relative speed on the chosen
+catalogue part.
+
+### Crossed-roller output bearing
+
+The 61806 is replaced by a CRBH 3510 crossed-roller bearing (35 × 60 × 10), which takes the arm's radial,
+axial and tilting loads in one row. The housing bulkhead grows to z 31–44 with a 60 mm seat; the carrier
+sleeve grows from Ø30 to Ø35 and starts 3 mm further back. Check the static moment rating against the
+3.45 N·m tilting moment from `hand_calcs.py` on the chosen part. The housing studies above were run on the
+61806 version and weren't repeated; the bulkhead is now thicker, so they're conservative.
+
+### Clamp lever
+
+The side bars and the arm are now 10 mm deep (were 6 mm). Same study as above, re-run in STEVE (100 N push on
+the grip, cam cheeks and pivot held). The setup was first checked against the original lever, where it
+reproduced 155.1 MPa against the earlier 154.8 MPa.
+
+| Lever | Peak von Mises | Max displacement | Factor on 276 MPa yield | Mass |
+|---|---|---|---|---|
+| Original, 4 × 6 mm side bars | 155 MPa | 0.50 mm | 1.8 | 27.7 g |
+| Side bars only 10 mm deep | 123 MPa | 0.37 mm | 2.2 | 28.3 g |
+| **Side bars and arm 10 mm deep (adopted)** | **62 MPa** | **0.13 mm** | **4.5** | 42.2 g |
+
+Deepening only the bars moved the peak to the step where they met the thinner arm. Making the arm flush
+removed that step. A 200 N shove now reaches about 124 MPa, still 2.2× below yield.
+
+### Two-piece carrier in 303
+
+The one-piece carrier had to be milled sideways between its plates, through the three windows between the
+posts, from Ø70 bar: about 80% of the bar became chips, in gummy 304. It is now two pieces:
+
+- **Rear part:** sleeve, rear plate and three posts, milled from the open front face. Tapped M4 in each post.
+- **Front disk + output hub:** turned, with three 90° countersinks. The disk is 5 mm thick (was 3) so the heads
+  sit flush; the output face stays at z 72.
+- **Joint:** 3 × ISO 10642 M4 × 12 (A2-70) into the posts, 7 mm of thread each. The three planet pins pass
+  through both pieces and act as the dowels. Bore the pin holes with both pieces clamped together.
+- **Material:** AISI 303 (1.4305), the free-machining grade. STEVE's library has no 303, so the model uses
+  304, which has the same stiffness and density and a slightly lower yield (215 vs about 240 MPa annealed).
+
+Each piece was studied in STEVE with the whole 20 N·m (341 N per planet pin, load sharing included) going
+through it, which is conservative: in reality the pins share their load between the two plates.
+
+| Piece and load path | Support | Peak von Mises | Max displacement | Factor on 215 MPa |
+|---|---|---|---|---|
+| Rear part: all pin load in the rear plate | Post tops and screw holes | 21.6 MPa | 1.4 µm | 10 |
+| Front disk: all pin load in its pin holes | Six M4 load holes | 14.8 MPa | 0.29 µm | 15 |
+| Front disk: all load through the three screws | Six M4 load holes | 16.2 MPa | 0.31 µm | 13 |
+
+The joint itself (`hand_calcs.py`): three M4 screws at 2.5 kN preload hold 25 N·m by friction, 1.1× the
+23 N·m worst case where all the torque crosses the joint. The pins back that up: carrying their planet's
+341 N across the joint, each sees 12 MPa shear. The rear part's peak is at the sharp post-to-plate corner; a
+1 mm fillet there would lower it.
+
+### Motor
+
+The motor is now specified for SH-grade (150 °C) or UH-grade (180 °C) magnets and class H insulation, with a
+winding temperature sensor. See the requirements table in the [project README](../README.md#motor-specification).
+The 85 °C case estimate is unchanged; this change makes the motor tolerate it rather than lowering it.
 
 These are idealised estimates for a speculative concept, not a certification. Nothing here makes the design
 safe for real-world use. See the repository license (MIT, no warranty).

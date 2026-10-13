@@ -31,8 +31,11 @@ from components.sun import sun
 import params
 from links import carrier
 carrier = carrier(module=params.module, sun_teeth=params.sun_teeth, planet_teeth=params.planet_teeth)
+from links import carrier_disk   # carrier is two pieces: rear part with posts + this bolted front disk / output hub
+carrier_disk = carrier_disk(module=params.module, sun_teeth=params.sun_teeth, planet_teeth=params.planet_teeth)
 from components.needle_bearing import needle_bearing
 from components.planet import planet
+from components.planet_needle import planet_needle
 from components.ring_gear import ring_gear, ring_teeth
 from components.output_bearing import output_bearing
 from components.front_flange import front_flange
@@ -43,12 +46,13 @@ pedestal = pedestal()
 from components.bearing_6001_2rs_sealed_simple import bearing_6001_2rs_sealed_simple
 from components.iso4762_socket_head_cap_screw_m5x25 import iso4762_socket_head_cap_screw_m5x25
 from components.planet_pin import planet_pin
+from components.countersunk_socket_screw_m4_l0012_simple import countersunk_socket_screw_m4_l0012_simple
 
 gear_z = 48  # Gear stage starts here (mm along the axis)
 
 design = Design("Unknown machine – planetary joint actuator")
 for part in (housing, end_bell, rear_cap, encoder_disk, read_head, stator, windings, rotor,
-             sun, carrier, needle_bearing, ring_gear, output_bearing, front_flange, clamp_band, lever, pedestal):
+             sun, carrier, carrier_disk, needle_bearing, ring_gear, output_bearing, front_flange, clamp_band, lever, pedestal):
     design.add(part)
 for k in range(3):
     angle = 120 * k
@@ -56,6 +60,7 @@ for k in range(3):
     phase = angle + 180 - 180 / planet_teeth + angle * sun_teeth / planet_teeth
     centre = (orbit * math.cos(math.radians(angle)), orbit * math.sin(math.radians(angle)), gear_z)
     design.add(planet, at=(centre, ("Z", phase)), name=f"planet_{k + 1}")
+    design.add(planet_needle, at=(centre, ("Z", phase)), name=f"needle_p{k + 1}")
 # Catalog parts (step.parts): rear bearing 6001-2RS, 4x ISO 4762 M5x25 flange screws. Planet pins are ISO 2338
 # 6x18 dowels, modelled (the catalog's dowel-pin files are twice their nominal length).
 design.add(bearing_6001_2rs_sealed_simple, at=(0, 0, -46), name="rear_bearing")
@@ -66,6 +71,12 @@ for k, a in enumerate(SCREW_ANGLES):
 for k in range(3):
     a = math.radians(120 * k)
     design.add(planet_pin, at=(orbit * math.cos(a), orbit * math.sin(a), 44.5), name=f"pin_{k + 1}")
+# Front disk screws: ISO 10642 M4x12 countersunk (step.parts, origin on the head's top face) into the bridge posts,
+# heads flush with the disk face (z 65.5) in 9.4 mm countersinks; 7 mm of thread in each post.
+for k in range(3):
+    a = math.radians(120 * k + 60)
+    design.add(countersunk_socket_screw_m4_l0012_simple, at=(orbit * math.cos(a), orbit * math.sin(a), 65.5),
+               name=f"disk_screw_{k + 1}")
 
 # --- Working joints: motor -> sun -> planets -> carrier (ring gear fixed in the flange) ---
 carrier_ratio = sun_teeth / (sun_teeth + ring_teeth)
@@ -75,8 +86,12 @@ design.rigid("sun_key", "rotor", "sun")
 design.slider("encoder_out", "rotor", "encoder_disk", axis="Z", limits=(-310, 0))
 design.cylindrical("carrier_axis", "housing", "carrier", axis="Z", slide_limits=(0, 140))
 design.rigid("needle_fit", "carrier", "needle_bearing")
+design.rigid("disk_bolted", "carrier", "carrier_disk")   # 3 x M4 countersunk screws, located by the planet pins
+for k in range(3):
+    design.rigid(f"disk_screw_fit_{k + 1}", "carrier_disk", f"disk_screw_{k + 1}")
 for k in range(3):
     design.rigid(f"pin_fit_{k + 1}", "carrier", f"pin_{k + 1}")
+    design.rigid(f"needle_p_fit_{k + 1}", f"planet_{k + 1}", f"needle_p{k + 1}")   # cup pressed in the planet
 for k in range(3):
     a = math.radians(120 * k)
     design.revolute(f"planet_spin_{k + 1}", "carrier", f"planet_{k + 1}",
@@ -123,6 +138,13 @@ for a, b in [("rear_bearing", "end_bell"), ("rear_bearing", "rotor"), ("output_b
              ("screw_*", "front_flange"), ("end_bell", "housing"), ("rear_cap", "end_bell"),
              ("read_head", "end_bell"), ("clamp_band", "housing"), ("pin_*", "carrier")]:
     design.contact(a, b, kind="seated")
+design.contact("carrier_disk", "carrier", kind="seated")
+design.contact("pin_*", "carrier_disk", kind="seated")
+design.contact("disk_screw_*", "carrier_disk", kind="seated")
+design.contact("disk_screw_*", "carrier", kind="threaded")
+for k in range(1, 4):
+    design.contact(f"needle_p{k}", f"planet_{k}", kind="seated")
+    design.contact(f"needle_p{k}", f"pin_{k}", kind="seated")
 design.contact("screw_*", "housing", kind="threaded")
 design.fit_check("fit", motion=False)
 

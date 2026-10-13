@@ -12,4 +12,4 @@ outer_r = 43
 rim = outer_r - (module * ring_teeth / 2 + 1.25 * module)
 ring_gear.add("teeth", ring_gear_shape(module, ring_teeth, face_width, rim=rim, turn=turn).translate((0, 0, 48)),
               name="Internal teeth")
-ring_gear.material("steel-s235jr", finish="machined", color="#30343c")
+ring_gear.material("steel-34crnimo6", finish="machined", color="#30343c")   # quenched and tempered (nitriding optional)

@@ -8,4 +8,4 @@ planet.add("teeth", spur_gear(module, planet_teeth, face_width), name="Teeth")
 with planet.sketch("pin_hole", on="XY", name="Pin hole") as s:
     s.circle("c1", (0, 0), 3.25)
 planet.extrude("bore", "pin_hole", through_all=True, op="cut", name="Pin bore")
-planet.material("steel-s235jr", finish="machined")
+planet.material("steel-17crnimo6", finish="machined")   # case-hardening gear steel (18CrNiMo7-6), carburised

@@ -50,9 +50,9 @@ dimensions.
 | 1 | Stator core | steel (lamination stack stand-in) | bought with the motor |
 | 1 | Windings | C10200 copper | bought with the motor |
 | 1 | Rotor + hollow shaft + magnets | steel (magnets: NdFeB, steel stand-in) | bought with the motor |
-| 1 | Sun gear, m1 18T | steel (see analysis: needs case hardening) | made |
-| 3 | Planet gear, m1 27T | steel (see analysis) | made |
-| 1 | Ring gear, m1 72T internal | steel | made |
+| 1 | Sun gear, m1 18T | 18CrNiMo7-6 (17CrNiMo6) case-hardening steel, carburised | made |
+| 3 | Planet gear, m1 27T | 18CrNiMo7-6 (17CrNiMo6) case-hardening steel, carburised | made |
+| 1 | Ring gear, m1 72T internal | 34CrNiMo6, quenched and tempered (nitriding optional) | made |
 | 1 | Planet carrier (output) | 304 stainless | made |
 | 3 | Planet pin, dowel **ISO 2338 6 m6 × 18** | hardened steel | bought, modelled at catalogue size* |
 | 1 | Pilot needle bearing **HK1210** (12 × 16 × 10) | bearing steel | bought, modelled at catalogue size* |
@@ -119,16 +119,23 @@ Frame: the motor axis is +Z with the output at +Z, and the pedestal points towar
 
 ## Stress and strain
 
-Summary of [analysis/README.md](analysis/README.md), at an assumed 20 N·m peak output torque:
+Summary of [analysis/README.md](analysis/README.md), at an assumed 20 N·m peak output torque. Everything
+below was solved in STEVE.
 
 - **Planet carrier:** peak 12.5 MPa, 0.37 µm deflection, about 65 µε strain, roughly 17× below yield.
   Under a 150 N overhung arm load it deflects 5.3 µm.
+- **Gear teeth (bending):** the sun tooth root reaches 143 MPa (planet 109, ring 68). That is a factor of
+  about 1.6 on the soft S235 used in the model, so the gears need gear steel. Contact stress at the sun
+  (657 MPa, from the hand calculation) says the same: **case-hardened gears**.
+- **Planet pins:** about 50 MPa, roughly 20× below yield. The plain planet journals run too hot (PV
+  2.4 MPa·m/s at 3000 rpm) without needle bearings.
+- **Motor housing:** 3.6 MPa under the torque and bearing loads. Thermally, though, it reaches **about
+  85 °C** at an assumed 40 W of continuous losses in still air, above what standard NdFeB magnets tolerate.
+- **Clamp lever:** 155 MPa at a 100 N push. That's fine for normal use, but the side bars should be deeper.
 - **Pedestal:** 0.84 MPa peak, so it is heavily oversized.
-- **Gear teeth:** bending is fine at 67 MPa. Contact stress at the sun is **657 MPa**, so the gears need case
-  hardening.
-- **Planet pins:** bending is fine. The plain planet journals run too hot (PV 2.4 MPa·m/s at 3000 rpm)
-  without needle bearings.
-- **Flange screws:** hold 7.5× the ring-gear reaction by friction.
+- **Vibration:** every part's first natural frequency is above 3.4 kHz, against a 720 Hz gear-mesh
+  frequency at 3000 rpm.
+- **Flange screws:** hold 7.5× the ring-gear reaction by friction (hand calculation).
 
 ## Caveats
 
@@ -139,6 +146,9 @@ Summary of [analysis/README.md](analysis/README.md), at an assumed 20 N·m peak 
   shapes at catalogue dimensions, and the magnets are a steel stand-in.
 - Gears have zero backlash. The motor torque behind the [stress analysis](analysis/README.md) is assumed,
   not taken from a datasheet.
-- The analysis found weak points worth fixing in a real build: gear contact stress needs case-hardened
-  gears, the planets need needle bearings, and the output wants a crossed-roller bearing.
+- The analysis found weak points worth fixing in a real build: the gears need case-hardened steel, the
+  planets need needle bearings, the output wants a crossed-roller bearing, the motor needs high-temperature
+  magnets or better cooling, and the lever's side bars should be deeper.
+- The gears in the assembly source still have sharp tooth roots. The separate STEVE gear parts used for the
+  stress studies add the standard 0.38 mm root fillet.
 - Provided under the repository's [MIT license](../LICENSE), without warranty of any kind.

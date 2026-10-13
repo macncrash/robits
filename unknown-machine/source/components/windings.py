@@ -7,4 +7,4 @@ cu = ring(38, 30, 6, -30).fuse(ring(38, 30, 6, 12))
 for k in range(12):
     cu = cu.fuse(turned(box(29.2, -2.2, -24, 35.8, 2.2, 12), 30 * k + 15))
 windings.add("coils", cu.clean(), name="Coils")
-windings.material("copper-c10200", color="#b8733a")
+windings.material("copper-c10200", color="#b8733a")   # class H (180 C) magnet wire and impregnation

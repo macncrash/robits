@@ -4,7 +4,11 @@ STEVE's viewer draws the dark anodised parts almost black, so the README stills 
 and fill area lights over a dark graded floor, metal materials per part. Geometry is STEVE's, unchanged.
 
     # bodies-mesh.zip from generate_model(download=["bodies_mesh"]), unzipped into <mesh dir>
-    blender -b -P unknown-machine/images/render_blender.py -- <mesh dir> <out.png> [assembled|internals]
+    blender -b -P unknown-machine/images/render_blender.py -- <mesh dir> <out.png> [assembled|internals|lathe]
+    blender -b -P ... -- <mesh dir> <out.png> lathe x,y,z zoom   # look at a point (model mm) from closer in
+    ... lathe x,y,z zoom -20:carriage,tool_post                  # and move those instances along X (a pose)
+
+`lathe` renders the mini-lathe design (lathe-kit/), which is already Z-up, from the operator's side.
 """
 import json
 import math
@@ -20,6 +24,20 @@ HIDE = {"internals": ("housing", "front_flange", "screw_", "end_bell", "rear_cap
 
 # (base colour, metallic, roughness) by instance-name prefix; first match wins.
 LOOK = [
+    ("gib", ((0.72, 0.52, 0.22), 1.0, 0.30)),              # brass
+    ("tungsten_holder", ((0.45, 0.10, 0.10), 0.85, 0.35)),  # red anodised
+    ("grind_hub", ((0.55, 0.56, 0.58), 1.0, 0.30)), ("er16_collet_chuck", ((0.80, 0.80, 0.82), 1.0, 0.18)),
+    ("drill_bit", ((0.18, 0.18, 0.20), 1.0, 0.30)), ("tungsten", ((0.62, 0.64, 0.68), 1.0, 0.22)),
+    ("handwheel", ((0.80, 0.81, 0.83), 1.0, 0.28)), ("cross_wheel", ((0.80, 0.81, 0.83), 1.0, 0.28)),
+    ("carriage_wheel", ((0.80, 0.81, 0.83), 1.0, 0.28)), ("compound_wheel", ((0.80, 0.81, 0.83), 1.0, 0.28)),
+    ("tailstock_wheel", ((0.80, 0.81, 0.83), 1.0, 0.28)),
+    ("workpiece", ((0.88, 0.88, 0.89), 1.0, 0.18)),
+    ("tool_post", ((0.20, 0.21, 0.23), 1.0, 0.35)),
+    ("bed", ((0.05, 0.055, 0.065), 0.8, 0.38)), ("headstock_plate", ((0.05, 0.055, 0.065), 0.8, 0.38)),
+    ("foot", ((0.05, 0.055, 0.065), 0.8, 0.38)), ("leadscrew_bracket", ((0.05, 0.055, 0.065), 0.8, 0.38)),
+    ("carriage", ((0.11, 0.13, 0.17), 0.85, 0.32)), ("cross_slide", ((0.11, 0.13, 0.17), 0.85, 0.32)), ("compound", ((0.11, 0.13, 0.17), 0.85, 0.32)),
+    ("top_slide", ((0.11, 0.13, 0.17), 0.85, 0.32)), ("tailstock", ((0.11, 0.13, 0.17), 0.85, 0.32)),
+    ("chuck", ((0.16, 0.17, 0.19), 0.9, 0.40)),
     ("read_head", ((0.10, 0.36, 0.20), 0.0, 0.45)),
     ("housing", ((0.11, 0.13, 0.17), 0.85, 0.32)),        # dark blue-grey anodise
     ("end_bell", ((0.11, 0.13, 0.17), 0.85, 0.32)),
@@ -27,6 +45,8 @@ LOOK = [
     ("pedestal", ((0.11, 0.13, 0.17), 0.85, 0.36)),
     ("front_flange", ((0.14, 0.16, 0.22), 0.85, 0.30)),
     ("carrier", ((0.80, 0.80, 0.80), 1.0, 0.24)),          # 303 stainless, brushed
+    ("chuck_backplate", ((0.80, 0.80, 0.80), 1.0, 0.24)),
+    ("lathe_chuck", ((0.16, 0.17, 0.19), 0.9, 0.40)),      # cast-iron chuck body, ground jaws
     ("ring_gear", ((0.30, 0.31, 0.33), 1.0, 0.34)),
     ("sun", ((0.62, 0.62, 0.63), 1.0, 0.28)),
     ("planet_", ((0.62, 0.62, 0.63), 1.0, 0.28)),
@@ -57,20 +77,22 @@ def material(look):
 parts = bpy.data.objects.new("actuator", None)
 scene.collection.objects.link(parts)
 for item in json.load(open(mesh_dir / "manifest.json"))["items"]:
-    name = item["instance"]
+    name = item["instance"].split("/")[-1]
     if any(name.startswith(h) for h in HIDE):
         continue
     bpy.ops.wm.stl_import(filepath=str(mesh_dir / item["file"]))
     ob = bpy.context.selected_objects[0]
     ob.name = name
     ob.parent = parts
+    if len(args) > 5 and any(name.startswith(n) for n in args[5].split(":")[1].split(",")):
+        ob.location.x += float(args[5].split(":")[0])     # mm, before the parent's scale
     bpy.ops.object.shade_auto_smooth(angle=math.radians(35))
     look = next((v for k, v in LOOK if name.startswith(k)), DEFAULT)
     ob.data.materials.append(material(look))
 
 # Design frame is mm with the pedestal toward -Y: stand it up (pedestal down, output toward the camera side).
 parts.scale = (0.001, 0.001, 0.001)
-parts.rotation_euler = (math.radians(90), 0, 0)
+parts.rotation_euler = (0, 0, 0) if view == "lathe" else (math.radians(90), 0, 0)
 bpy.context.view_layer.update()
 pts = [ob.matrix_world @ Vector(c) for ob in parts.children for c in ob.bound_box]
 lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
@@ -78,6 +100,11 @@ hi = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)
 parts.location = (-(lo.x + hi.x) / 2, -(lo.y + hi.y) / 2, -lo.z)
 centre = Vector((0, 0, (hi.z - lo.z) / 2))
 size = (hi - lo).length
+zoom = 1.0
+if len(args) > 4:                                    # close-up on a point given in model mm
+    focus = Vector([float(v) for v in args[3].split(",")]) * 0.001
+    centre = focus + Vector(parts.location)
+    zoom = float(args[4])
 
 # Floor: dark, slightly glossy, fading into the background.
 bpy.ops.mesh.primitive_plane_add(size=40 * size)
@@ -115,7 +142,7 @@ cam_data = bpy.data.cameras.new("cam")
 cam_data.lens = 70
 cam = bpy.data.objects.new("cam", cam_data)
 scene.collection.objects.link(cam)
-cam.location = centre + Vector((-1.15, -2.05, 1.05)) * size
+cam.location = centre + (Vector((0.55, -1.9, 0.95)) if view == "lathe" else Vector((-1.15, -2.05, 1.05))) * size * zoom
 cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
 scene.camera = cam
 

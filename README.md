@@ -13,6 +13,12 @@ Each project lives in its own folder with everything needed to open, view or reb
 | Unknown machine | Robot-joint actuator: BLDC motor + 5:1 planetary gearbox, hollow shaft, encoder, clamp mount | [`unknown-machine/`](unknown-machine/) |
 | Robot arm | Six-axis arm with claw gripper, built from six sizes of the joint actuator; joints, poses and a pick-and-place animation | [`robot-arm/`](robot-arm/) |
 
+## Tools
+
+| Tool | What it does |
+|---|---|
+| [`tools/partsel/`](tools/partsel/) | Part selector: checks the bought-part cards in [`parts/`](parts/) against a project's requirements and explains every pass and fail, with sources. [65 s demo video](tools/partsel/demo/partsel-demo.mp4) |
+
 ## Folder layout
 
 Every project folder follows the same layout:
@@ -23,6 +29,7 @@ Every project folder follows the same layout:
   images/       the reference image and renders of the model
   source/       parametric CAD source (CadQuery / Python), one file per component
   analysis/     stress / strain studies and hand calculations, where done
+  requirements/ what bought parts must meet, checked with tools/partsel
   exports/      neutral CAD files: STEP (assembly and per component), STL meshes, DXF where there are flat parts
 ```
 

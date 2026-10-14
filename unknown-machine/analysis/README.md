@@ -134,7 +134,11 @@ Flange slip torque with A2-70 stainless screws: 120.0 N·m vs 16 N·m needed (x7
 Flange slip torque with 8.8 steel screws: 210.0 N·m vs 16 N·m needed (x13.12)
 Flange slip torque with 12.9 steel screws: 315.0 N·m vs 16 N·m needed (x19.69)
 M5 thread engagement in aluminium: 9.5 mm = 1.9 d (aim >= 2 d)
-Output bearing 61806 static: P0 150 N vs C0 2900 N (s0 19); tilting moment 3.45 N·m on one deep-groove row
+Carrier joint: 3 x M4 friction holds 25.3 N·m vs 23 N·m worst case (x1.10); planet pins as dowels: 12 MPa shear each
+Motor: copper loss 33 W at 1.3 N·m duty, 83 W at the 2.06 N·m continuous rating; peak-current limit 5.9 A for 4.0 N·m
+Housing in still air at 1.58 K/W: about 77 °C at the duty torque (copper only), 156 °C at the motor's full continuous rating
+Bond shear at 4.0 N·m: stator 12 kPa (half the bore bonded), rotor 94 kPa vs about 30 MPa lap shear
+Output bearing CRBH 3510: 150 N radial, 100 N axial, 3.45 N·m tilting moment; check the maker's moment rating (the old 61806: s0 19 on force alone)
 ```
 
 ## What this says about the design
@@ -185,8 +189,8 @@ catalogue part.
 The 61806 is replaced by a CRBH 3510 crossed-roller bearing (35 × 60 × 10), which takes the arm's radial,
 axial and tilting loads in one row. The housing bulkhead grows to z 31–44 with a 60 mm seat; the carrier
 sleeve grows from Ø30 to Ø35 and starts 3 mm further back. Check the static moment rating against the
-3.45 N·m tilting moment from `hand_calcs.py` on the chosen part. The housing studies above were run on the
-61806 version and weren't repeated; the bulkhead is now thicker, so they're conservative.
+3.45 N·m tilting moment from `hand_calcs.py` on the chosen part. The housing studies were re-run with
+this bulkhead and the KBM motor bore; see [Motor](#motor) below.
 
 ### Clamp lever
 
@@ -232,9 +236,44 @@ The joint itself (`hand_calcs.py`): three M4 screws at 2.5 kN preload hold 25 N�
 
 ### Motor
 
-The motor is now specified for SH-grade (150 °C) or UH-grade (180 °C) magnets and class H insulation, with a
-winding temperature sensor. See the requirements table in the [project README](../README.md#motor-specification).
-The 85 °C case estimate is unchanged; this change makes the motor tolerate it rather than lowering it.
+The motor is now a Kollmorgen KBM-17H01-B00 (155 °C winding rating, PTC thermistor), run from a 240 Vac drive.
+See [Motor](../README.md#motor-kollmorgen-kbm-17h01-b00) in the project README. The housing's bore is now
+Ø85.10 from the rear to a depth-stop ledge at z 29–31, so its walls are 0.55 mm thinner than before, and the
+bulkhead is the thicker crossed-roller one. All four housing studies were re-run on that geometry in STEVE
+(Motor housing part, revision 4), with the 40 W going in through the bore where the stator is bonded
+(z −26 to 29) and the clamp band zone (z 20–32) as the support:
+
+| Study | Before (61806 bulkhead, generic motor) | Now (CRBH 3510 bulkhead, KBM-17 bore) |
+|---|---|---|
+| Ring-gear reaction 16 N·m + 150 N radial / 100 N axial on the bearing seat | 3.6 MPa, 1.8 µm | **0.84 MPa, 0.44 µm** |
+| Steady heat, 40 W, h = 12 W/m²K, 25 °C air | 85–87 °C | **87.8–88.5 °C** |
+| Thermal stress, band zone held perfectly rigid (upper bound) | 211 MPa, 0.14 mm | 294 MPa, 0.13 mm |
+| Thermal stress, rigid band that grows with the housing (304 band: only the 6.6 µm/m·K difference loads it) | — | **82 MPa, 0.036 mm** |
+| First natural frequency, held at the band zone | 5.10 kHz | **4.83 kHz** |
+
+All runs pass STEVE's balance checks (force and energy residuals around 1e-8 relative). How to read them:
+
+- **Stress.** The thicker bulkhead carries the bearing and ring loads with almost nothing: under 1 MPa.
+- **Thermal stress.** The 294 MPa rigid-band figure is above 6061-T6 yield, but no real band is rigid and
+  fixed in size: it is stainless and heats up with the housing. The second case holds the band zone just as
+  rigidly but subtracts the band's own growth. 82 MPa is still an upper bound, because a real band also
+  stretches. That is about 3.3× below 6061-T6 yield at 88 °C (about 270 MPa). Peak stress is at the edges of
+  the band zone. Don't over-tighten the clamp: preload adds to this.
+- **Heat.** The housing rises about 1.58 K per watt in still air, so 40 W gives about 88 °C. From the KBM
+  catalog, the copper loss is 1.5 × I² × Rm: about 33 W at the 1.3 N·m duty torque. With iron losses at
+  3000 rpm, 40 W is a fair estimate. The winding is rated 155 °C, so the case leaves about 65 K for the
+  winding-to-case rise. The PTC thermistor should trip the drive before that runs out.
+- **Continuous torque is limited by the housing, not the motor.** At the motor's own 2.06 N·m continuous
+  rating, copper loss alone is about 83 W, which would put this housing at about 156 °C in still air. In
+  this package, without a heat path through the pedestal or airflow, plan on about 1.3–1.5 N·m continuous
+  motor torque (6.5–7.5 N·m at the output). Full 4 N·m peaks are fine for short bursts.
+- **Bonds.** At 4 N·m, the stator bond sees about 12 kPa of shear (with only half the bore bonded) and the
+  rotor bond about 94 kPa. Both are hundreds of times below the about 30 MPa lap shear of Scotchweld 2214.
+  The bond's real limits are temperature and cure, not strength: stay under the adhesive's rated temperature,
+  and follow Kollmorgen's 82 °C limit for curing the rotor outside the stator.
+- **Not yet modelled.** The stator and rotor geometry still uses estimated bore and OD values until
+  Kollmorgen's STEP model replaces them. The housing studies don't depend on those values; the stator OD and
+  length are catalog values.
 
 These are idealised estimates for a speculative concept, not a certification. Nothing here makes the design
 safe for real-world use. See the repository license (MIT, no warranty).

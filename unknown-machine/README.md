@@ -87,8 +87,9 @@ the open front face; see [the analysis](analysis/README.md#two-piece-carrier-in-
 ```
 images/
   reference.png              the AI-generated image this started from
-  assembled-isometric.png    render of the model
+  assembled-isometric.png    render of the model (Blender, from STEVE's mesh export)
   internals-isometric.png    render with the outer parts hidden
+  render_blender.py          the render script: studio lights, metal materials, geometry unchanged
 source/                      CadQuery source for the STEVE CAD design
   main.py                    places the parts, joints, gear coupling, teardown animation, fit check
   params.py                  gear module and tooth counts

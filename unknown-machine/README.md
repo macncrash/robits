@@ -100,6 +100,7 @@ source/                      CadQuery source for the STEVE CAD design
   parts/carrier.py           planet carrier rear part, a separate part linked into the design (`from links import carrier`)
   parts/carrier_disk.py      planet carrier front disk and output hub, likewise (`from links import carrier_disk`)
   parts/pedestal.py          pedestal, likewise
+  parts/chuck_backplate.py   optional lathe chuck backplate (303), a separate STEVE part
 analysis/
   README.md                  stress / strain results (FEA and hand calculations) and what they mean
   hand_calcs.py              gear, pin, bolt and bearing checks; plain Python 3
@@ -211,6 +212,16 @@ it can replace the envelope parts.
 
 **Limit the drive's peak current to about 5.9 A.** At its full 6.14 N·m the motor would put 31 N·m through the
 gears, which are sized for 20 N·m.
+
+## Lathe option
+
+![Actuator with the 80 mm chuck](images/lathe-chuck.png)
+
+The actuator can also be a small lathe headstock. A 303 backplate bolts to the output disk (6 × M4 × 12, piloted
+on the Ø20 hub) and takes a bought 80 mm front-mount 3-jaw chuck. In STEVE it's the
+[backplate part](https://stevecad.studio/?document=b55f2ff3-a103-4a53-9ea2-28fac9591a3e) and the actuator's
+`lathe` branch, where the fit check (1,081 pairs) and the teardown check (chuck off first) both pass. The whole
+manual lathe, with bed, slides, tool post, tailstock and dials, is in [`lathe-kit/`](../lathe-kit/).
 
 ## Pedestal mount
 

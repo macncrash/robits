@@ -41,7 +41,7 @@ why = "Back-EMF at the duty speed must stay under the drive's DC bus"
 [[check]]
 field = "winding_temp_max_c"
 min = 150
-why = "Housing runs about 88 °C at 40 W losses (STEVE study); windings and magnets run hotter"
+why = "Housing runs about 73 °C at 40 W losses on an insulated pedestal (STEVE study); windings and magnets run hotter"
 
 [[check]]
 field = "thermal_sensor"

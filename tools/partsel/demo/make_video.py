@@ -60,13 +60,13 @@ TITLE = ("partsel: picking bought parts fast",
           "Plain Python 3.11+, no installs.  Part cards in parts/, requirements next to the project.",
           "In this video, partsel = python3 tools/partsel/partsel.py"])
 OUTRO = ("Result: Kollmorgen KBM-17H01-B00 (US), 240 Vac drive",
-         ["STEVE studies on the housing, re-run with the KBM bore (revision 4):",
-          "  ring + bearing loads       0.84 MPa, 0.44 µm",
-          "  40 W losses, still air     88 °C on the case (winding rated 155 °C)",
-          "  thermal stress at band     82 MPa with a stainless band that grows with it",
-          "  first natural frequency    4.83 kHz",
+         ["STEVE studies, housing bolted into the pedestal (clamp band removed):",
+          "  40 W, still air, base insulated       69–73 °C on the case (winding rated 155 °C)",
+          "  40 W, base on a 35 °C structure       35–44 °C; 28 W leave through the base",
+          "  ring + bearing loads, 4 screws        9.8 MPa",
+          "  first natural frequency, on pedestal  1.82 kHz (no internal parts)",
           "",
-          "Housing heat, not the motor, limits continuous torque to about 1.3–1.5 N·m.",
+          "Bolted to metal, the motor's full 2.06 N·m continuous rating fits (about 55 °C case).",
           "Next: Kollmorgen's 3D model for the stator bore and end turns, then the shop package."])
 
 

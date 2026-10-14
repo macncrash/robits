@@ -1,0 +1,30 @@
+# KBM-17H01-C00: Kollmorgen KBM frameless brushless motor, frame 17. Values as printed in the catalog.
+id = "kollmorgen-kbm-17h01-c"
+category = "frameless-motors"
+maker = "Kollmorgen"
+country = "US"
+model = "KBM-17H01-C00"
+notes = "Frameless: no flange on frame 17. Stator bonds into a housing cup with a depth-stop shoulder (0.05-0.10 mm slip fit per side, adhesive grooves over 50%+ of the bore, 2 mm min to the end turns; Scotchweld 2214 or Hysol EA934NA), or an axial clamp ring if it must come out (catalog pp. 90-93). Rotor bonds or lock-nuts against a shaft shoulder; optional 8 x M3 tapped holes on a 23.5 mm circle (p. 95). End-turn OD and stator bore are not in the catalog: take them from the 3D model at kollmorgen.com/kbm. KBMS (Hall) variants have longer rotors."
+
+[sources]
+catalog = { title = "Kollmorgen KBM Series Selection Guide (Electromate copy)", url = "https://www.electromate.com/media/assets/catalog-library/pdfs/kollmorgen/Kollmorgen_KBM_Frameless_Motors_Catalog.pdf" }
+specs = { title = "Kollmorgen KBM specifications", url = "https://www.kollmorgen.com/en-us/developer-network/kbm-specifications" }
+
+[values]
+stator_od_mm = { v = 84.963, src = "catalog", page = 19 }
+rotor_bore_mm = { v = 30.010, src = "catalog", page = 19 }
+winding_temp_max_c = { v = 155, src = "catalog", page = 6 }
+thermal_sensor = { v = "PTC thermistor", src = "catalog", page = 6 }
+poles = { v = 10, src = "catalog", page = 20 }
+insulation = { v = "H (>240 Vac, standard on frame 17)", src = "catalog", page = 102 }
+stator_length_mm = { v = 57.80, src = "catalog", page = 19 }
+rotor_length_mm = { v = 30.15, src = "catalog", page = 19 }
+cont_torque_nm = { v = 2.07, src = "catalog", page = 20 }
+cont_current_arms = { v = 6.1, src = "catalog", page = 20 }
+peak_torque_nm = { v = 6.35, src = "catalog", page = 20 }
+peak_current_arms = { v = 21.8, src = "catalog", page = 20 }
+kt_nm_per_arms = { v = 0.355, src = "catalog", page = 20 }
+kb_vrms_per_krpm = { v = 21.5, src = "catalog", page = 20 }
+resistance_ohm_ll = { v = 1.56, src = "catalog", page = 20 }
+drive_vac_at_rated_output = { v = 240, src = "catalog", page = 20 }
+mass_kg = { v = 1.05, src = "catalog", page = 20 }

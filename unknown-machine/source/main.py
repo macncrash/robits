@@ -25,7 +25,7 @@ from components.rear_cap import rear_cap
 from components.encoder_disk import encoder_disk
 from components.read_head import read_head
 from components.stator import stator
-from components.windings import windings
+from components.motor_rotor import motor_rotor
 from components.rotor import rotor
 from components.sun import sun
 import params
@@ -51,7 +51,7 @@ from components.countersunk_socket_screw_m4_l0012_simple import countersunk_sock
 gear_z = 48  # Gear stage starts here (mm along the axis)
 
 design = Design("Unknown machine – planetary joint actuator")
-for part in (housing, end_bell, rear_cap, encoder_disk, read_head, stator, windings, rotor,
+for part in (housing, end_bell, rear_cap, encoder_disk, read_head, stator, motor_rotor, rotor,
              sun, carrier, carrier_disk, needle_bearing, ring_gear, output_bearing, front_flange, clamp_band, lever, pedestal):
     design.add(part)
 for k in range(3):
@@ -119,7 +119,7 @@ design.slider("end_bell_out", "housing", "end_bell", axis="Z", limits=(-210, 0))
 design.rigid("rear_bearing_fit", "end_bell", "rear_bearing")
 design.rigid("read_head_mount", "end_bell", "read_head")
 design.slider("stator_out", "housing", "stator", axis="Z", limits=(-110, 0))
-design.rigid("windings_in_stator", "stator", "windings")
+design.rigid("rotor_bonded", "rotor", "motor_rotor")   # KBM rotor bonded to the hub sleeve
 
 # Teardown: each stage keeps what the stages before it moved.
 design.pose("assembled", lever_pivot=0)
@@ -133,7 +133,7 @@ design.animation("teardown", keys + [(dict(values), len(STAGES) + 1.5)], loop=Fa
 # Designed contacts (seats, press fits, gear meshes, threads); everything else must not touch.
 for a, b in [("rear_bearing", "end_bell"), ("rear_bearing", "rotor"), ("output_bearing", "housing"),
              ("output_bearing", "carrier"), ("needle_bearing", "carrier"), ("stator", "housing"),
-             ("windings", "stator"), ("sun", "rotor"), ("encoder_disk", "rotor"), ("sun", "planet_*"),
+             ("motor_rotor", "rotor"), ("sun", "rotor"), ("encoder_disk", "rotor"), ("sun", "planet_*"),
              ("planet_*", "ring_gear"), ("ring_gear", "front_flange"), ("front_flange", "housing"),
              ("screw_*", "front_flange"), ("end_bell", "housing"), ("rear_cap", "end_bell"),
              ("read_head", "end_bell"), ("clamp_band", "housing"), ("pin_*", "carrier")]:

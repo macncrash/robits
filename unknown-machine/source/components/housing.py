@@ -7,11 +7,13 @@ from assembly_data import SCREW_PCD, SCREW_ANGLES
 
 housing = Component("housing", name="Motor housing")
 
-shell = ring(51.5, 42, 10, -36)                      # rear section, z -36..-26
-fins = ring(48, 42, 40, -26)                         # finned section, z -26..14
+stator_bore = 42.55                                  # radius: KBM-17 stator 84.963 + 0.07 mm slip fit per side, bonded
+shell = ring(51.5, stator_bore, 10, -36)             # rear section, z -36..-26 (stator goes in from the rear)
+fins = ring(48, stator_bore, 40, -26)                # finned section, z -26..14
 for k in range(1, 9):
     fins = fins.cut(ring(48.1, 45, 2.5, -26 + 40 * k / 9 - 1.25))
-front = ring(56, 42, 22, 14)                         # front section, z 14..36 (clamp band sits here)
+front = ring(56, stator_bore, 15, 14)                # front section, z 14..29 (clamp band sits on z 20..32)
+front = front.fuse(ring(56, 40.5, 2, 29))            # depth-stop ledge z 29..31: the stator sleeve banks against it
 bulkhead = ring(56, 24, 13, 31).cut(cyl(30, 10, 34))   # z 31..44, CRBH 3510 crossed-roller seat (60 mm) open to the front
 body = shell.fuse(fins).fuse(front).fuse(bulkhead)
 for a in SCREW_ANGLES:                               # M5 tapped holes (tap drill 4.2) for the flange screws

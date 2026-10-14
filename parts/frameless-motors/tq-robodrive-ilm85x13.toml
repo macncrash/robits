@@ -1,0 +1,25 @@
+# TQ RoboDrive ILM 85x13 frameless motor kit. Values as listed on the product page.
+id = "tq-robodrive-ilm85x13"
+category = "frameless-motors"
+maker = "TQ-Systems"
+country = "DE"
+model = "ILM 85x13"
+notes = "48 V kit, hollow 52 mm rotor. Magnet grade, insulation class, temperature sensor and mounting details are in the extended datasheet and assembly instructions (not yet read). Online shop up to 50 units, 10-12 weeks."
+
+[sources]
+page = { title = "TQ RoboDrive ILM 85x13 product page", url = "https://www.tq-group.com/en/products/tq-robodrive/motors-drive-solutions/motor-kits/ilm85x13/" }
+
+[values]
+stator_od_mm = { v = 85, src = "page" }
+stator_length_mm = { v = 26.9, src = "page" }
+rotor_bore_mm = { v = 52, src = "page" }
+rotor_length_mm = { v = 15.7, src = "page" }
+cont_torque_nm = { v = 1.44, src = "page" }
+cont_current_arms = { v = 10.8, src = "page" }
+peak_torque_nm = { v = 4.66, src = "page" }
+kt_nm_per_arms = { v = 0.134, src = "page" }
+rated_bus_vdc = { v = 48, src = "page" }
+rated_speed_rpm = { v = 2938, src = "page" }
+resistance_ohm_ll = { v = 0.22, src = "page" }
+poles = { v = 20, src = "page" }
+mass_kg = { v = 0.40, src = "page" }

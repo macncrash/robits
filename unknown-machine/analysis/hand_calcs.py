@@ -5,8 +5,8 @@ Every input is an assumption stated below; change them and re-run. Linear: resul
 """
 import math
 
-# ---- Load case (assumed: no motor datasheet exists for an imagined machine) ----
-T_motor = 4.0        # N·m peak motor torque (typical of an ~85 mm frameless BLDC with a ~35 mm stack)
+# ---- Load case: Kollmorgen KBM-17H01-B00, drive peak current limited to ~5.9 A (catalog p. 20) ----
+T_motor = 4.0        # N·m peak motor torque the gears are sized for (the motor itself can make 6.14 N·m)
 n_motor = 3000       # rpm motor speed for the dynamic factor and planet-pin sliding speed
 K_share = 1.15       # load-sharing factor between the 3 planets (unequal sharing from tolerances)
 
@@ -69,8 +69,19 @@ T_disk_slip = n_disk_screws * preload_m4 * mu * r_orbit   # N·m the joint holds
 T_carrier = T_out * K_share                               # worst case: all of it crosses the joint
 tau_pin_joint = F_pin / (math.pi * d_pin ** 2 / 4)        # MPa if a pin carries its planet's load across the joint
 
+# ---- Motor: KBM-17H01-B00 winding B (catalog p. 20) and the bonded joints (mounting guide pp. 90-95) ----
+Kt, Rm, Tc, T_cont_duty = 0.681, 6.02, 2.06, 1.3   # N·m/Arms, ohm line-line, N·m continuous rating, N·m duty torque
+K_per_W = (88.2 - 25) / 40                          # K/W housing rise above air, from the STEVE steady-heat study (40 W)
+P_cu = lambda T: 1.5 * (T / Kt) ** 2 * Rm          # W copper loss, three-phase from line-line resistance (at 25 °C)
+I_limit = T_motor / Kt                             # Arms drive peak-current limit for 4 N·m
+r_stator, L_stator, bonded = 84.963 / 2000, 57.80 / 1000, 0.5   # m, m, adhesive over at least half the bore
+r_rotor, L_rotor = 30.010 / 2000, 30.15 / 1000      # m rotor bore and length on the hub sleeve
+tau_stator_bond = T_motor / (2 * math.pi * r_stator ** 2 * L_stator * bonded) / 1e6   # MPa
+tau_rotor_bond = T_motor / (2 * math.pi * r_rotor ** 2 * L_rotor) / 1e6               # MPa
+lap_shear_2214 = 30.0                               # MPa, typical for 3M Scotchweld 2214 on aluminium/steel
+
 # ---- Bearings (catalogue ratings, check the maker's datasheet) ----
-C0_61806, C0_6001 = 2.9e3, 2.36e3               # N static load ratings
+C0_61806, C0_6001 = 2.9e3, 2.36e3               # N static load ratings (61806 was the first output bearing)
 Fr_out, Fa_out, arm = 150.0, 100.0, 23.0         # N, N, mm overhung load case and its lever to the bearing
 P0_out = max(Fr_out, 0.6 * Fr_out + 0.5 * Fa_out)
 M_out = Fr_out * arm / 1000                      # N·m tilting moment on a single deep-groove bearing
@@ -87,5 +98,11 @@ if __name__ == "__main__":
     print(f"M5 thread engagement in aluminium: {engagement:.1f} mm = {engagement / 5:.1f} d (aim >= 2 d)")
     print(f"Carrier joint: 3 x M4 friction holds {T_disk_slip:.1f} N·m vs {T_carrier:.0f} N·m worst case"
           f" (x{T_disk_slip / T_carrier:.2f}); planet pins as dowels: {tau_pin_joint:.0f} MPa shear each")
-    print(f"Output bearing 61806 static: P0 {P0_out:.0f} N vs C0 {C0_61806:.0f} N (s0 {C0_61806 / P0_out:.0f});"
-          f" tilting moment {M_out:.2f} N·m on one deep-groove row")
+    print(f"Motor: copper loss {P_cu(T_cont_duty):.0f} W at {T_cont_duty} N·m duty, {P_cu(Tc):.0f} W at the"
+          f" {Tc} N·m continuous rating; peak-current limit {I_limit:.1f} A for {T_motor} N·m")
+    print(f"Housing in still air at {K_per_W:.2f} K/W: about {25 + K_per_W * P_cu(T_cont_duty):.0f} °C at the duty torque"
+          f" (copper only), {25 + K_per_W * P_cu(Tc):.0f} °C at the motor's full continuous rating")
+    print(f"Bond shear at {T_motor} N·m: stator {tau_stator_bond * 1000:.0f} kPa (half the bore bonded),"
+          f" rotor {tau_rotor_bond * 1000:.0f} kPa vs about {lap_shear_2214:.0f} MPa lap shear")
+    print(f"Output bearing CRBH 3510: {Fr_out:.0f} N radial, {Fa_out:.0f} N axial, {M_out:.2f} N·m tilting moment;"
+          f" check the maker's moment rating (the old 61806: s0 {C0_61806 / P0_out:.0f} on force alone)")

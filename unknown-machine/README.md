@@ -17,7 +17,7 @@ joint modules shown standing on its own.
 
 | In the image | Interpreted as | Modelled |
 |---|---|---|
-| Finned middle section | Motor housing with cooling fins | 12-slot stator, copper windings, 14-pole surface-magnet rotor |
+| Finned middle section | Motor housing with cooling fins | Kollmorgen KBM-17 frameless stator (10-pole) and rotor on a hollow shaft |
 | Fine-toothed ring around the front disk | Fixed **ring gear** of a planetary stage | Sun 18 T, 3 planets 27 T, ring 72 T, module 1: **5:1 reduction** |
 | Silver disk + small hub with a bore | Planet carrier = output, with a hollow cable pass-through | Two-piece carrier: rear part with 3 bridge posts + bolted front disk and hub, 3 pressed-in planet pins, 8 mm bore end to end |
 | Knurled rear cap | Encoder cover | Code disk on the shaft + read head on the end bell |
@@ -48,9 +48,9 @@ dimensions.
 | 1 | Encoder disk | 304 stainless | made |
 | 1 | Encoder read head | PC | bought (placeholder shape) |
 | 1 | Rear bearing **6001-2RS** (12 × 28 × 8) | bearing steel (C60 stand-in) | **catalogue STEP**: [step.parts `bearing_6001_2rs_sealed_simple`](https://www.step.parts/parts/bearing_6001_2rs_sealed_simple) |
-| 1 | Stator core | steel (lamination stack stand-in) | bought with the motor |
-| 1 | Windings | C10200 copper, class H (180 °C) insulation | bought with the motor |
-| 1 | Rotor + hollow shaft + magnets | steel (magnets: NdFeB grade SH or UH, steel stand-in) | bought with the motor |
+| 1 | Stator **Kollmorgen KBM-17H01-B00** | (envelope model) | bought with the rotor as a kit |
+| 1 | Rotor **Kollmorgen KBM-17H01-B00** (bonded to the hub sleeve) | (envelope model) | bought with the stator as a kit |
+| 1 | Motor shaft + rotor hub sleeve | steel | made |
 | 1 | Sun gear, m1 18T | 18CrNiMo7-6 (17CrNiMo6) case-hardening steel, carburised | made |
 | 3 | Planet gear, m1 27T | 18CrNiMo7-6 (17CrNiMo6) case-hardening steel, carburised | made |
 | 1 | Ring gear, m1 72T internal | 34CrNiMo6, quenched and tempered (nitriding optional) | made |
@@ -139,8 +139,11 @@ below was solved in STEVE.
   (657 MPa, from the hand calculation) says the same: **case-hardened gears**.
 - **Planet pins:** about 50 MPa, roughly 20× below yield. Plain planet journals would run too hot (PV
   2.4 MPa·m/s at 3000 rpm), so each planet now runs on an HK0609 needle bearing.
-- **Motor housing:** 3.6 MPa under the torque and bearing loads. Thermally, though, it reaches **about
-  85 °C** at an assumed 40 W of continuous losses in still air, above what standard NdFeB magnets tolerate.
+- **Motor housing** (re-run for the KBM bore and crossed-roller bulkhead): 0.84 MPa under the torque and
+  bearing loads, first mode 4.83 kHz. Thermally it reaches **about 88 °C** at 40 W of continuous losses in
+  still air (1.58 K/W). The KBM's 155 °C winding takes that, but the housing, not the motor, limits continuous
+  torque to about 1.3–1.5 N·m without a heat path through the pedestal or airflow. Thermal stress at the band
+  is 82 MPa with a stainless band that grows with the housing.
 - **Clamp lever:** 155 MPa at a 100 N push with the original 6 mm deep side bars. With the bars and arm
   10 mm deep it is **62 MPa** and 0.13 mm (was 0.50 mm), about 4.5× below yield.
 - **Pedestal:** 0.84 MPa peak, so it is heavily oversized.
@@ -148,25 +151,46 @@ below was solved in STEVE.
   frequency at 3000 rpm.
 - **Flange screws:** hold 7.5× the ring-gear reaction by friction (hand calculation).
 
-## Motor specification
+## Motor: Kollmorgen KBM-17H01-B00
 
-The motor is a frameless BLDC kit (stator + rotor) pressed into the housing. The model's stator and rotor are
-generic stand-ins, so the motor is specified by requirements rather than a part number:
+The motor is a **Kollmorgen KBM-17H01-B00** frameless brushless kit (stator + rotor, made in the US), chosen
+with the part selector (`python3 ../tools/partsel/partsel.py requirements/motor.toml --detail`) against the
+requirements in [`requirements/motor.toml`](requirements/motor.toml). It runs from a **240 Vac servo drive
+(about 325 V DC bus)** rather than 48 V: no standard KBM winding reaches 3000 rpm on 48 V.
 
-| Requirement | Value | Why |
+| | KBM-17H01-B00 (catalog) | Requirement |
 |---|---|---|
-| Envelope | Stator OD ≤ 84 mm, stator ID about 56 mm, stack ≤ 36 mm | Fits the current housing bore and length |
-| Topology | 12 slots / 14 poles (or similar concentrated winding) | As modelled; short end turns |
-| Peak torque | ≥ 4 N·m | Gives 20 N·m at the output through the 5:1 stage |
-| Continuous | ≥ 1.3 N·m at 3000 rpm (about 400 W) | The duty behind the 40 W loss / 85 °C case estimate |
-| Magnets | Sintered NdFeB, grade **SH (150 °C) minimum, UH (180 °C) preferred** | The case reaches about 85 °C, so the rotor runs hotter; standard N grades start losing strength above about 80 °C |
-| Winding insulation | Class H (180 °C) | Margin over the hot-spot temperature |
-| Temperature sensor | PT1000 or KTY84 in the end turns | Lets the drive derate before the magnets are at risk |
-| Supply | 48 V DC bus | Typical for robot joints of this size |
+| Stator OD × length | 84.963 × 57.80 mm | ≤ 86 mm OD, ≤ 70 mm long |
+| Rotor bore × length | 30.010 × 30.15 mm | passes the 12 mm hollow shaft |
+| Continuous / peak torque | 2.06 / 6.14 N·m | ≥ 1.3 / ≥ 4 N·m |
+| Bus needed at 3000 rpm | 201 V DC (derived from Kb 41.2 Vrms/kRPM) | ≤ 325 V DC |
+| Current at 4 N·m / continuous | 5.9 A / 3.11 A rms | sizes the drive |
+| Winding rating, sensor | 155 °C, PTC thermistor | ≥ 150 °C, a sensor |
+| Mass | 1.05 kg | |
 
-Frameless kits around this size to evaluate include the TQ RoboDrive ILM 85 and Kollmorgen KBM families. Their
-dimensions, magnet grades and ratings haven't been checked here; confirm them against the datasheets, and
-resize the stator and rotor parts to the chosen kit.
+Selector result: B and C windings pass; the A winding needs 379 V DC at 3000 rpm and fails; the longer
+KBM-17H02 fails on length; the TQ ILM 85x13 can't be confirmed (temperature rating and sensor not published on
+its product page) and isn't American. B was picked over C for half the current (a smaller drive).
+
+**Fit in the housing.** The KBM stator is longer than the old stand-in but fits the same housing: it uses the
+13 mm that was free ahead of the old windings. Per Kollmorgen's mounting guide (catalog pp. 90–95):
+
+- The housing bore is now Ø85.10 (0.07 mm slip fit per side) from the rear, so the stator slides in from the
+  back and **bonds in** (3M Scotchweld 2214 or Hysol EA934NA; machine shallow adhesive grooves, 0.13–0.26 mm
+  deep, over at least half the bore).
+- A 2 mm **depth-stop ledge** (Ø81 bore) at the front locates it; the stator's front sits 2 mm off the bulkhead
+  floor, Kollmorgen's minimum end-turn clearance.
+- The rotor bonds onto a Ø30 hub sleeve on the shaft and banks against a Ø34 shoulder (below the magnet
+  diameter). Don't cure the rotor bond above 82 °C unless it's inside the stator.
+- Kollmorgen can add 8 × M3 tapped holes on a 23.5 mm circle to the rotor if a bolted rotor is preferred.
+
+**Still to confirm from Kollmorgen's 3D model** (kollmorgen.com/kbm; the catalog doesn't give them): the stator
+bore and end-turn diameter (the ledge must clear the end turns by 2 mm) and the rotor OD. The model uses
+estimates (stator bore 52 mm, rotor OD 50 mm), marked in `stator.py` and `motor_rotor.py`. Download the STEP and
+it can replace the envelope parts.
+
+**Limit the drive's peak current to about 5.9 A.** At its full 6.14 N·m the motor would put 31 N·m through the
+gears, which are sized for 20 N·m.
 
 ## Caveats
 
@@ -178,10 +202,10 @@ resize the stator and rotor parts to the chosen kit.
 - Gears have zero backlash. The motor torque behind the [stress analysis](analysis/README.md) is assumed,
   not taken from a datasheet.
 - The analysis found weak points that have since been fixed in the model: case-hardened gear steel, planet
-  needle bearings, a crossed-roller output bearing, a deeper lever and a high-temperature motor spec (see
-  [Motor specification](#motor-specification)). Still open: a fillet at the carrier's sleeve-to-plate corner,
+  needle bearings, a crossed-roller output bearing, a deeper lever and a Kollmorgen KBM-17 motor (see
+  [Motor](#motor-kollmorgen-kbm-17h01-b00)). Still open: a fillet at the carrier's sleeve-to-plate corner,
   2–3 mm deeper M5 threads (or inserts) in the housing, and a heat path out through the pedestal.
-- The STEVE assembly (design revision 24) builds and passes its fit check (595 part pairs) with all these
+- The STEVE assembly (design revision 25, with the KBM-17 motor) builds and passes its fit check (595 part pairs) with all these
   changes. The STEP and STL files in `exports/` haven't been regenerated yet and still show the revision 18
   geometry: re-export them from the STEVE model.
 - The gears in the assembly source still have sharp tooth roots. The separate STEVE gear parts used for the

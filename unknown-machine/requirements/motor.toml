@@ -1,0 +1,61 @@
+# Motor requirements for the unknown-machine joint actuator.
+# Run: python3 tools/partsel/partsel.py unknown-machine/requirements/motor.toml --detail
+title = "Unknown machine: frameless motor"
+category = "frameless-motors"
+
+[operating]
+speed_rpm = 3000          # motor speed at the duty point (analysis/hand_calcs.py)
+peak_torque_nm = 4.0      # motor torque that gives the 20 N·m output the gears are sized for
+bus_vdc = 325             # 240 Vac servo drive, rectified (decision 2026-10-13: higher-voltage drive)
+
+[[check]]
+field = "stator_od_mm"
+max = 86
+why = "Housing bore grows to about 85.1 mm; the finned wall can't give more"
+
+[[check]]
+field = "stator_length_mm"
+max = 70
+why = "Housing may grow (decision 2026-10-13), but keep the actuator compact"
+
+[[check]]
+field = "rotor_bore_mm"
+min = 14
+why = "Must pass the 12 mm hollow motor shaft with a hub sleeve"
+
+[[check]]
+field = "cont_torque_nm"
+min = 1.3
+why = "About 400 W continuous at 3000 rpm"
+
+[[check]]
+field = "peak_torque_nm"
+min = "peak_torque_nm"
+why = "20 N·m at the output through the 5:1 stage"
+
+[[check]]
+field = "bus_vdc_needed"
+max = "bus_vdc"
+why = "Back-EMF at the duty speed must stay under the drive's DC bus"
+
+[[check]]
+field = "winding_temp_max_c"
+min = 150
+why = "Housing runs about 88 °C at 40 W losses (STEVE study); windings and magnets run hotter"
+
+[[check]]
+field = "thermal_sensor"
+in = ["PTC thermistor", "PT1000", "KTY84", "NTC thermistor"]
+why = "The drive must be able to derate before the magnets are at risk"
+
+[[check]]
+field = "country"
+equals = "US"
+prefer = true
+why = "Prefer an American supplier"
+
+[[check]]
+field = "mass_kg"
+max = 1.2
+prefer = true
+why = "Lighter is better for the arm's joints"

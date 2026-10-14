@@ -21,13 +21,13 @@ joint modules shown standing on its own.
 | Fine-toothed ring around the front disk | Fixed **ring gear** of a planetary stage | Sun 18 T, 3 planets 27 T, ring 72 T, module 1: **5:1 reduction** |
 | Silver disk + small hub with a bore | Planet carrier = output, with a hollow cable pass-through | Two-piece carrier: rear part with 3 bridge posts + bolted front disk and hub, 3 pressed-in planet pins, 8 mm bore end to end |
 | Knurled rear cap | Encoder cover | Code disk on the shaft + read head on the end bell |
-| Bolted front flange | Retains the ring gear | 4 × M5×25 socket head screws into tapped holes in the housing |
+| Bolted front flange | Retains the ring gear | 4 × M5×30 socket head screws into tapped holes in the housing (14.5 mm of thread) |
 | Top lever + silver band | Quick-release cam clamp | Modelled first as a band and lever; **removed**: it did no useful work. The housing now bolts to the pedestal. |
 | Base with 4 holes, side port | Mounting pedestal with cable exit | Saddle block the housing bolts into + base plate with four Ø9 holes |
 
 ## Main numbers
 
-- Envelope about 130 × 162 × 137 mm (flange Ø120 mm, motor can Ø96–112 mm)
+- Envelope about 130 × 162 × 137 mm (flange Ø120 mm, motor can Ø96–120 mm)
 - Gear ratio 1 + 72/18 = **5:1**; planets evenly spaced ((18 + 72) is divisible by 3) and phased to mesh
 - Bearings: a CRBH 3510 crossed-roller bearing (35 × 60 × 10) carries the output and the arm's tilting
   moment; 6001-2RS (12 × 28 × 8) at the rear; HK1210 needle bearing pilots the shaft's front end inside the
@@ -62,8 +62,8 @@ dimensions.
 | 1 | Pilot needle bearing **HK1210** (12 × 16 × 10) | bearing steel | bought, modelled at catalogue size* |
 | 1 | Output bearing **CRBH 3510** crossed roller (35 × 60 × 10) | bearing steel | bought, modelled at catalogue size* |
 | 1 | Front flange | 6061-T6 aluminium, anodised | made |
-| 4 | Socket head cap screw **ISO 4762 M5 × 25** | A2-70 stainless | **catalogue STEP**: [step.parts `iso4762_socket_head_cap_screw_m5x25`](https://www.step.parts/parts/iso4762_socket_head_cap_screw_m5x25) |
-| 1 | Pedestal (saddle bored Ø112 / Ø96 to the housing, 4 counterbores from below, 2 dowel holes) | 6061-T6 aluminium, anodised | made |
+| 4 | Socket head cap screw **ISO 4762 M5 × 30** (flange) | A2-70 stainless | **catalogue STEP**: [step.parts `iso4762_socket_head_cap_screw_m5x30`](https://www.step.parts/parts/iso4762_socket_head_cap_screw_m5x30) |
+| 1 | Pedestal (saddle bored Ø120 / Ø96 to the housing, 4 counterbores from below, 2 dowel holes) | 6061-T6 aluminium, anodised | made |
 | 4 | Socket head cap screw **ISO 4762 M5 × 20** (pedestal to housing, from below) | A2-70 stainless | **catalogue STEP**: [step.parts `iso4762_socket_head_cap_screw_m5x20`](https://www.step.parts/parts/iso4762_socket_head_cap_screw_m5x20) |
 | 2 | Dowel pin **ISO 2338 4 m6 × 12** (locates the housing in the saddle) | hardened steel | bought, modelled at catalogue size* |
 | 1 | Thermal pad or paste between housing and saddle (e.g. 0.25 mm silicone pad) | — | bought |
@@ -116,11 +116,23 @@ There are no DXF files because nothing in this design is sheet metal or laser-cu
 ### Motion in the source
 
 - `spin`: the motor turns the sun, planets and carrier at the correct planetary ratios.
-- `teardown` animation: takes the unit apart in a service order. The flange screws, flange, carrier with
-  planets, ring gear and output bearing come out of the front. The encoder cap, encoder disk and end bell
-  with its bearing come off the back, then the rotor and stator come out. Last, the four pedestal screws come
-  out from below and the unit lifts off the pedestal.
+- `teardown` animation: takes the unit apart in the service order, checked for collisions on every build:
+  1. The flange screws come out, then the flange comes off with the ring gear pressed into it, and the ring is
+     pressed out forward.
+  2. The encoder cap, encoder disk and end bell with its bearing come off the back.
+  3. The carrier and planets come out the front, taking the sun with them. The sun is caught between the
+     carrier's rear plate and front disk, so it slides off the shaft's key.
+  4. The output bearing comes out the front, then the rotor and the stator come out the back.
+  5. The four pedestal screws come out from below and the unit lifts off the pedestal.
 - `exploded` pose: every part pulled apart along the axis.
+- `showreel` animation (STEVE branch `showreel` only): 20 s on a display turntable for showing people. The
+  table turns once, the motor turns 10 times, and the unit comes apart front and back at once and goes back
+  together. It is checked for collisions (`check=True`), which caught three real order constraints. The ring
+  gear is pressed into the flange, so they come off together. The sun is caught inside the carrier, so it
+  slides off the shaft and comes out with the carrier before the rotor goes out the back. The encoder disk
+  rides on the rotor. The `teardown` on main now follows the same order. To make the video, open the
+  branch in STEVE, then use Motion tab → `showreel` → export (STEVE's MCP can't export video yet; a feature
+  request is filed).
 - A fit check (interference between all 378 part pairs, with declared seats, gear meshes and screw threads)
   passes on this revision.
 
@@ -140,13 +152,15 @@ below was solved in STEVE.
   (657 MPa, from the hand calculation) says the same: **case-hardened gears**.
 - **Planet pins:** about 50 MPa, roughly 20× below yield. Plain planet journals would run too hot (PV
   2.4 MPa·m/s at 3000 rpm), so each planet now runs on an HK0609 needle bearing.
-- **Motor housing** (KBM bore, crossed-roller bulkhead, bolted to the pedestal): 9.8 MPa under the torque
+- **Motor housing** (KBM bore, crossed-roller bulkhead, bolted to the pedestal): 8.4 MPa under the torque
   and bearing loads when held by the four pedestal screws alone. Thermally, bolting it into the pedestal is
   what makes the difference. At 40 W of continuous losses in still air it reaches **about 73 °C** with the
   pedestal on an insulating surface (was 88 °C on the clamp band), and **about 44 °C** with the pedestal
   bolted to a metal structure at 35 °C.
-- **Pedestal mount:** four M5 screws hold 6.7× the output torque by friction, with dowels behind them. The
-  housing on its pedestal has a first mode of 1.82 kHz (structure only, no internal parts).
+- **Pedestal mount:** four M5 screws hold 7.2× the output torque by friction, with dowels behind them. The
+  housing on its pedestal has a first mode of 1.75 kHz (structure only, no internal parts).
+- **Screw threads:** every screw joint is declared in STEVE and checked on each build. Thread engagement is
+  at least 2.2 d everywhere: front flange M5 × 30 14.5 mm, pedestal M5 × 20 11 mm, carrier M4 × 16 11 mm.
 - **Clamp lever** (since removed): 155 MPa at a 100 N push with the original 6 mm deep side bars.
 - **Vibration:** every part's first natural frequency is above 3.4 kHz, against a 720 Hz gear-mesh
   frequency at 3000 rpm.
@@ -202,13 +216,13 @@ thermal stress, and the band and saddle gave the motor heat almost no path into 
 
 The housing now sits straight in the pedestal saddle:
 
-- **Saddle:** bored to the housing, Ø112 under the front section and Ø96 under the fins. The saddle block runs
+- **Saddle:** bored to the housing, Ø120 under the front section and Ø96 under the fins. The saddle block runs
   from z −20 to 44, so the finned section is supported too. Bore it +0.00/+0.03 mm and fit a thin thermal pad
   or paste in the joint.
 - **Screws:** 4 × ISO 4762 M5 × 20 (A2-70) come up from below, through counterbores in the base, into M5
-  holes in the housing's front section and bulkhead (x ±16, z 29 and 39). That gives about 10 mm (2 d) of
-  thread, and each blind hole stops at least 2 mm short of the bore. Friction alone holds 134 N·m about the
-  axis, 6.7× the output torque.
+  holes in the housing's front section and bulkhead (x ±16, z 28 and 37). The housing is round, so at x ±16
+  its surface is at y −57.8: the screws reach y −46, about 11 mm (2.2 d) of thread, and each blind hole stops
+  4.1 mm short of the stator bore. Friction alone holds 144 N·m about the axis, 7.2× the output torque.
 - **Dowels:** 2 × ISO 2338 4 m6 × 12 on the centre line (z 22 and 40), pressed into the pedestal. The housing
   goes back in the same place after every removal, which also helps test fits at the machine shop.
 - **Access:** the screws are reached from under the base, so take the actuator off before bolting the
@@ -219,11 +233,34 @@ The housing now sits straight in the pedestal saddle:
 |---|---|
 | Base on an insulating surface | **69–73 °C** (was 88 °C on the clamp band) |
 | Base bolted to a metal structure held at 35 °C | **35–44 °C**; 28 of the 40 W leave through the base |
-| Housing held by the 4 screws alone: ring reaction + bearing loads | 9.8 MPa, 8.6 µm |
-| First natural frequency, base bolted down, no internal parts | **1.82 kHz** (1.33 kHz before the saddle block was lengthened) |
+| Housing held by the 4 screws alone: ring reaction + bearing loads | 8.4 MPa, 6.6 µm |
+| First natural frequency, base bolted down, no internal parts | **1.75 kHz** (1.82 kHz with the Ø112 front, 1.33 kHz before the saddle block was lengthened) |
 
 See [analysis](analysis/README.md#pedestal-mount-clamp-removed) for how these were set up and what they
 leave out.
+
+**What it delivers:** 18.3 N·m at the output up to 910 rpm (1.74 kW peak) on the 5.9 A drive limit, 10.3 N·m
+continuous, 1060 rpm no-load. See the [torque-speed chart](analysis/motor-curves.png) and the 32 s
+[showcase video](analysis/motor-showcase.mp4): a Gravity particle sim of 27,000 actuators, then the chart.
+
+## Screw threads
+
+The front of the housing grew from Ø112 to Ø120 (the flange's diameter) so the threads could be made
+conservative rather than just adequate. Every screw joint is declared in STEVE (`design.fasten`) with the
+engagement rule set to 2 d, and checked on the geometry at every build:
+
+| Joint | Screw | Thread engagement | Wall around the thread | STEVE check |
+|---|---|---|---|---|
+| Front flange → housing | 4 × ISO 4762 M5 × 30 (was M5 × 25) | 14.5 mm = 2.9 d (was 9.5) | 7.9 mm to the OD (was about 3.5) | engagement, depth and walls pass; flagged "moving" (below) |
+| Pedestal → housing, from below | 4 × ISO 4762 M5 × 20 | 11.0 mm = 2.2 d (was 9.0) | 4.1 mm to the stator bore | engagement and depth pass; flagged "moving" and saddle-exit wall (below) |
+| Carrier front disk → posts | 3 × ISO 10642 M4 × 16 (was M4 × 12) | 11 mm = 2.75 d (was 7) | 4.35 mm in the post | **pass** |
+
+The check still lists two things that aren't defects. Every screw holding a part that the teardown animation
+slides away is marked "moving", although the teardown removes the screws first. And where the pedestal's
+clearance holes exit through the curved saddle, the wall reads 0.00 mm wherever the hole is put. Both are
+filed with STEVE as part of the video-export feature request. The pedestal changed to match: the saddle is
+bored Ø120, the counterbore floor is at y −66, the screw rows moved to z 28 / 37 (2.25 mm of wall to the
+block end; it was 0.25 mm) and the side cable port moved 2 mm toward the fins.
 
 ## Caveats
 
@@ -237,10 +274,11 @@ leave out.
 - The analysis found weak points that have since been fixed in the model: case-hardened gear steel, planet
   needle bearings, a crossed-roller output bearing, a Kollmorgen KBM-17 motor (see
   [Motor](#motor-kollmorgen-kbm-17h01-b00)) and a bolted pedestal mount with a heat path in place of the clamp
-  (see [Pedestal mount](#pedestal-mount)). Still open: a fillet at the carrier's sleeve-to-plate corner and
-  2–3 mm deeper M5 threads (or inserts) for the front flange screws.
-- The STEVE assembly (design revision 28, bolted pedestal mount) builds and passes its fit check (741 part
-  pairs) with all these changes. The STEP and STL files in `exports/` haven't been regenerated yet and still show the revision 18
+  (see [Pedestal mount](#pedestal-mount)) and conservative screw threads (see [Screw threads](#screw-threads)).
+  Still open: a fillet at the carrier's sleeve-to-plate corner, and the KBM stator bore and end turns from
+  Kollmorgen's 3D model (behind a free account login).
+- The STEVE assembly (design revision 36) builds and passes its fit check (741 part pairs, nothing new or
+  worse) with all these changes. The STEP and STL files in `exports/` haven't been regenerated yet and still show the revision 18
   geometry: re-export them from the STEVE model.
 - The gears in the assembly source still have sharp tooth roots. The separate STEVE gear parts used for the
   stress studies add the standard 0.38 mm root fillet.

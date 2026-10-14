@@ -1,8 +1,8 @@
 """Planet carrier, rear part: sleeve in the CRBH 3510 output bearing, rear plate and three bridge posts.
 
 The carrier is made in two pieces so it can be machined from the open front face: this rear part (posts milled
-from the front) and a bolted front disk with the output hub (separate part). Three ISO 10642 M4 x 12 countersunk
-screws go through the disk into the posts; the three ISO 2338 planet pins pass through both and locate them.
+from the front) and a bolted front disk with the output hub (separate part). Three ISO 10642 M4 x 16 countersunk
+screws go through the disk into the posts (11 mm of thread, 2.75 d); the three ISO 2338 planet pins pass through both and locate them.
 Parameters: gear stage (sets the planet orbit), post radius, screw tapping depth.
 """
 import math
@@ -13,7 +13,7 @@ module = 1  # mm Gear module (pitch diameter = module x teeth)
 sun_teeth = 18  # count Sun gear teeth
 planet_teeth = 27  # count Planet gear teeth (ring = sun + 2 x planet)
 post_r = 6  # mm Bridge posts between the planets (2 mm clear of the planet tip circles)
-tap_depth = 9  # mm M4 tapped hole depth in each post (screw engages 7 mm)
+tap_depth = 13  # mm M4 tapped hole depth in each post (M4 x 16 engages 11 mm, 2 mm below the tip)
 
 orbit = module * (sun_teeth + planet_teeth) / 2  # Planet centres
 

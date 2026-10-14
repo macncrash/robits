@@ -9,6 +9,8 @@ actuator. Reading the outside features as a design intent:
 - stainless band + top lever = a quick-release cam clamp in the image. It was dropped: the housing now sits
   straight in the pedestal saddle on a thermal pad (the pedestal is its heat sink), held by 4 x M5 x 20 screws
   from below and located by 2 x 4 mm dowels.
+Screw joints are declared with design.fasten and checked every build (engagement, bottoming, walls); threads in
+the aluminium housing get at least 2.2 d of engagement (rule set to 2 d: conservative for 6061-T6 with A2-70).
 
 Joints: the motor drives the gear train (coupling "spin", ratio 1 + ring/sun). Every part also has a slide
 joint so the animation "teardown" takes it apart in a service order; pose "exploded" shows it fully apart.
@@ -45,10 +47,10 @@ from components.mount_dowel import mount_dowel
 from links import pedestal
 pedestal = pedestal()
 from components.bearing_6001_2rs_sealed_simple import bearing_6001_2rs_sealed_simple
-from components.iso4762_socket_head_cap_screw_m5x25 import iso4762_socket_head_cap_screw_m5x25
 from components.planet_pin import planet_pin
-from components.countersunk_socket_screw_m4_l0012_simple import countersunk_socket_screw_m4_l0012_simple
 from components.iso4762_socket_head_cap_screw_m5x20 import iso4762_socket_head_cap_screw_m5x20
+from components.iso4762_socket_head_cap_screw_m5x30 import iso4762_socket_head_cap_screw_m5x30
+from components.countersunk_socket_screw_m4_l0016_simple import countersunk_socket_screw_m4_l0016_simple   # A2-70
 
 gear_z = 48  # Gear stage starts here (mm along the axis)
 
@@ -63,34 +65,34 @@ for k in range(3):
     centre = (orbit * math.cos(math.radians(angle)), orbit * math.sin(math.radians(angle)), gear_z)
     design.add(planet, at=(centre, ("Z", phase)), name=f"planet_{k + 1}")
     design.add(planet_needle, at=(centre, ("Z", phase)), name=f"needle_p{k + 1}")
-# Catalog parts (step.parts): rear bearing 6001-2RS, 4x ISO 4762 M5x25 flange screws. Planet pins are ISO 2338
+# Catalog parts (step.parts): rear bearing 6001-2RS, 4x ISO 4762 M5x30 flange screws (14.5 mm into the housing). Planet pins are ISO 2338
 # 6x18 dowels, modelled (the catalog's dowel-pin files are twice their nominal length).
 design.add(bearing_6001_2rs_sealed_simple, at=(0, 0, -46), name="rear_bearing")
 for k, a in enumerate(SCREW_ANGLES):
     r = SCREW_PCD / 2
-    design.add(iso4762_socket_head_cap_screw_m5x25,
+    design.add(iso4762_socket_head_cap_screw_m5x30,
                at=(r * math.cos(math.radians(a)), r * math.sin(math.radians(a)), 59.5), name=f"screw_{k + 1}")
 for k in range(3):
     a = math.radians(120 * k)
     design.add(planet_pin, at=(orbit * math.cos(a), orbit * math.sin(a), 44.5), name=f"pin_{k + 1}")
-# Front disk screws: ISO 10642 M4x12 countersunk (step.parts, origin on the head's top face) into the bridge posts,
-# heads flush with the disk face (z 65.5) in 9.4 mm countersinks; 7 mm of thread in each post.
+# Front disk screws: ISO 10642 M4x16 countersunk (step.parts, origin on the head's top face) into the bridge posts,
+# heads flush with the disk face (z 65.5) in 9.0 mm countersinks; 11 mm of thread in each post.
 for k in range(3):
     a = math.radians(120 * k + 60)
-    design.add(countersunk_socket_screw_m4_l0012_simple, at=(orbit * math.cos(a), orbit * math.sin(a), 65.5),
+    design.add(countersunk_socket_screw_m4_l0016_simple, at=(orbit * math.cos(a), orbit * math.sin(a), 65.5),
                name=f"disk_screw_{k + 1}")
 # Pedestal mount: ISO 4762 M5 x 20 from below (step.parts, origin under the head), heads on the counterbore floor
-# at y -64, ~10 mm of thread in the housing; two ISO 2338 4 x 12 dowels on the centre line.
-for k, (x, z) in enumerate((x, z) for z in (29, 39) for x in (-16, 16)):
-    design.add(iso4762_socket_head_cap_screw_m5x20, at=((x, -64, z), ("X", 90)), name=f"mount_screw_{k + 1}")
+# at y -66, about 11 mm of thread in the housing (its surface is at y -57.8 at x = 16); two ISO 2338 4 x 12 dowels.
+for k, (x, z) in enumerate((x, z) for z in (28, 37) for x in (-16, 16)):
+    design.add(iso4762_socket_head_cap_screw_m5x20, at=((x, -66, z), ("X", 90)), name=f"mount_screw_{k + 1}")
 for k, z in enumerate((22, 40)):
-    design.add(mount_dowel, at=(0, -62, z), name=f"mount_dowel_{k + 1}")
+    design.add(mount_dowel, at=(0, -66, z), name=f"mount_dowel_{k + 1}")
 
 # --- Working joints: motor -> sun -> planets -> carrier (ring gear fixed in the flange) ---
 carrier_ratio = sun_teeth / (sun_teeth + ring_teeth)
 planet_ratio = -(sun_teeth / planet_teeth) * (1 - carrier_ratio)
 design.cylindrical("rotor_axis", "housing", "rotor", axis="Z", slide_limits=(-160, 0))
-design.rigid("sun_key", "rotor", "sun")
+design.slider("sun_key", "rotor", "sun", axis="Z", limits=(0, 300))   # keyed; slides off the shaft nose forward
 design.slider("encoder_out", "rotor", "encoder_disk", axis="Z", limits=(-310, 0))
 design.cylindrical("carrier_axis", "housing", "carrier", axis="Z", slide_limits=(0, 140))
 design.rigid("needle_fit", "carrier", "needle_bearing")
@@ -136,7 +138,7 @@ for i, (stage, moves) in enumerate(STAGES):
     values = {**values, **moves}
     keys.append((dict(values), i + 1))
 design.pose("exploded", **values)
-design.animation("teardown", keys + [(dict(values), len(STAGES) + 1.5)], loop=False, easing="ease")
+design.animation("teardown", keys + [(dict(values), len(STAGES) + 1.5)], loop=False, easing="ease", check=True)
 
 # Designed contacts (seats, press fits, gear meshes, threads); everything else must not touch.
 for a, b in [("rear_bearing", "end_bell"), ("rear_bearing", "rotor"), ("output_bearing", "housing"),
@@ -157,5 +159,20 @@ for k in range(1, 4):
 design.contact("screw_*", "housing", kind="threaded")
 design.contact("mount_screw_*", "housing", kind="threaded")
 design.fit_check("fit", motion=False)
+
+# Declared screw joints: checked at every build on the geometry as built (inspect_model checks=["fasteners"]).
+for k, a in enumerate(SCREW_ANGLES):
+    r = SCREW_PCD / 2
+    x, y = r * math.cos(math.radians(a)), r * math.sin(math.radians(a))
+    design.fasten(f"flange_screw_{k + 1}", "ISO 4762 M5x30", axis=((x, y, 59.5), (0, 0, -1)),
+                  clamps=["front_flange"], into="housing", thread="tapped", instance=f"screw_{k + 1}")
+for k, (x, z) in enumerate((x, z) for z in (28, 37) for x in (-16, 16)):
+    design.fasten(f"mount_screw_{k + 1}", "ISO 4762 M5x20", axis=((x, -66, z), (0, 1, 0)),
+                  clamps=["pedestal"], into="housing", thread="tapped", instance=f"mount_screw_{k + 1}")
+for k in range(3):
+    a = math.radians(120 * k + 60)
+    design.fasten(f"disk_screw_{k + 1}", "ISO 10642 M4x16", axis=((orbit * math.cos(a), orbit * math.sin(a), 65.5), (0, 0, -1)),
+                  clamps=["carrier_disk"], into="carrier", thread="tapped", instance=f"disk_screw_{k + 1}")
+design.fastener_rules(min_engagement_d=2.0)   # conservative for steel screws in aluminium / 303
 
 result = design.result()

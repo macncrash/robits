@@ -8,10 +8,13 @@ and fill area lights over a dark graded floor, metal materials per part. Geometr
     blender -b -P ... -- <mesh dir> <out.png> lathe x,y,z zoom   # look at a point (model mm) from closer in
     ... lathe x,y,z zoom -20:carriage,tool_post                  # and move those instances along X (a pose)
 
-`lathe` renders the mini-lathe design (lathe-kit/), which is already Z-up, from the operator's side.
+`lathe` renders the mini-lathe design (lathe-kit/), which is already Z-up, from the operator's side; use it for
+any Z-up design. RENDER_LOOKS=<file.json> adds materials ahead of the built-in ones: [[prefix, [[r, g, b], metallic,
+roughness]], ...].
 """
 import json
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -54,6 +57,8 @@ LOOK = [
     ("motor_rotor", ((0.45, 0.47, 0.50), 1.0, 0.35)),
     ("encoder_disk", ((0.85, 0.85, 0.86), 1.0, 0.12)),
 ]
+if os.environ.get("RENDER_LOOKS"):
+    LOOK = [(k, (tuple(c), m, r)) for k, (c, m, r) in json.load(open(os.environ["RENDER_LOOKS"]))] + LOOK
 DEFAULT = ((0.78, 0.78, 0.79), 1.0, 0.22)                # bearings, pins, screws, dowels: bright steel
 
 bpy.ops.wm.read_factory_settings(use_empty=True)

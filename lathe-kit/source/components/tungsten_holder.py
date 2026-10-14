@@ -2,7 +2,7 @@
 post's front-left corner, and a bored block that holds the electrode at `half_angle` to the disc face, so the flank
 lies flat on it and the marks run lengthwise. Bore a sliding fit for 2.4 mm (sleeve it for 1.6 / 3.2); turn the
 tungsten by hand between passes and feed with the carriage dial. Modelled with the carriage at rest; in use the
-carriage sits 20 mm to the left (carriage_feed 3600), which brings the tip onto the disc face.
+carriage sits 20 mm to the left (carriage_feed 1800 on the 4 mm-lead ball screw), which brings the tip onto the disc face.
 """
 import math
 

@@ -11,7 +11,9 @@ Each project lives in its own folder with everything needed to open, view or reb
 | Project | What it turned out to be | Folder |
 |---|---|---|
 | Unknown machine | Robot-joint actuator: BLDC motor + 5:1 planetary gearbox, hollow shaft, encoder, bolted pedestal mount. [Torque-speed showcase video](unknown-machine/analysis/motor-showcase.mp4) | [`unknown-machine/`](unknown-machine/) |
-| Lathe kit | Manual mini lathe on the unknown-machine actuator: dovetail bed, carriage, cross-slide, compound, 4-way tool post, tailstock with live centre, graduated dials | [`lathe-kit/`](lathe-kit/) |
+| Lathe kit | Manual mini lathe on the unknown-machine actuator: dovetail bed, ball-screw carriage and cross-slide, compound, 4-way tool post, tailstock, graduated dials, printed way covers; milling attachment (the actuator moved onto a column) | [`lathe-kit/`](lathe-kit/) |
+| Bench grinder | Separate machine: the same KBM motor in direct drive (3450 rpm, Ø150 wheels) on a pedestal stand | [`lathe-kit/bench-grinder/`](lathe-kit/bench-grinder/) |
+| Disc sander | Separate machine: a second actuator turning a Ø250 disc, tilting table and miter gauge, on a bench stand | [`lathe-kit/disc-sander/`](lathe-kit/disc-sander/) |
 | Robot arm | Six-axis arm with claw gripper, built from six sizes of the joint actuator; joints, poses and a pick-and-place animation | [`robot-arm/`](robot-arm/) |
 
 ## Tools

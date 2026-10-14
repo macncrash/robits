@@ -14,6 +14,8 @@ Each project lives in its own folder with everything needed to open, view or reb
 | Lathe kit | Manual mini lathe on the unknown-machine actuator: dovetail bed, ball-screw carriage and cross-slide, compound, 4-way tool post, tailstock, graduated dials, printed way covers; milling attachment (the actuator moved onto a column) | [`lathe-kit/`](lathe-kit/) |
 | Bench grinder | Separate machine: the same KBM motor in direct drive (3450 rpm, Ø150 wheels) on a pedestal stand | [`lathe-kit/bench-grinder/`](lathe-kit/bench-grinder/) |
 | Disc sander | Separate machine: a second actuator turning a Ø250 disc, tilting table and miter gauge, on a bench stand | [`lathe-kit/disc-sander/`](lathe-kit/disc-sander/) |
+| Cold saw | Separate machine: actuator + 20:1 worm gearbox turning a Ø250 HSS blade at 0–53 rpm, chop pivot, mitre turntable, vise, coolant, on a stand | [`lathe-kit/cold-saw/`](lathe-kit/cold-saw/) |
+| Vertical band saw | Separate machine: actuator + 5:1 timing belt, Ø250 wheels, 0–166 m/min blade speed, tilting table, on a stand | [`lathe-kit/band-saw/`](lathe-kit/band-saw/) |
 | Robot arm | Six-axis arm with claw gripper, built from six sizes of the joint actuator; joints, poses and a pick-and-place animation | [`robot-arm/`](robot-arm/) |
 
 ## Tools

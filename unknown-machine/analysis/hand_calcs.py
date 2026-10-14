@@ -71,7 +71,8 @@ tau_pin_joint = F_pin / (math.pi * d_pin ** 2 / 4)        # MPa if a pin carries
 
 # ---- Motor: KBM-17H01-B00 winding B (catalog p. 20) and the bonded joints (mounting guide pp. 90-95) ----
 Kt, Rm, Tc, T_cont_duty = 0.681, 6.02, 2.06, 1.3   # N·m/Arms, ohm line-line, N·m continuous rating, N·m duty torque
-K_per_W = (88.2 - 25) / 40                          # K/W housing rise above air, from the STEVE steady-heat study (40 W)
+K_per_W = (72.9 - 25) / 40                          # K/W housing rise above air, bolted to the pedestal, base insulated (STEVE, 40 W)
+K_per_W_band = (88.2 - 25) / 40                     # K/W the same, on the old clamp band (no heat path into the pedestal)
 P_cu = lambda T: 1.5 * (T / Kt) ** 2 * Rm          # W copper loss, three-phase from line-line resistance (at 25 °C)
 I_limit = T_motor / Kt                             # Arms drive peak-current limit for 4 N·m
 r_stator, L_stator, bonded = 84.963 / 2000, 57.80 / 1000, 0.5   # m, m, adhesive over at least half the bore
@@ -79,6 +80,11 @@ r_rotor, L_rotor = 30.010 / 2000, 30.15 / 1000      # m rotor bore and length on
 tau_stator_bond = T_motor / (2 * math.pi * r_stator ** 2 * L_stator * bonded) / 1e6   # MPa
 tau_rotor_bond = T_motor / (2 * math.pi * r_rotor ** 2 * L_rotor) / 1e6               # MPa
 lap_shear_2214 = 30.0                               # MPa, typical for 3M Scotchweld 2214 on aluminium/steel
+
+# ---- Pedestal mount: 4 x ISO 4762 M5 x 20 A2-70 from below into the housing, 2 x 4 mm dowels ----
+n_mount, r_saddle = 4, 0.056                        # screws, m saddle radius (friction acts at the housing OD)
+slip_mount = n_mount * preload["A2-70 stainless"] * mu * r_saddle   # N·m about the axis, by friction alone
+mount_engagement = 54.2 - 44.0                      # mm of M5 thread in the housing (surface at x 16 to the screw tip)
 
 # ---- Bearings (catalogue ratings, check the maker's datasheet) ----
 C0_61806, C0_6001 = 2.9e3, 2.36e3               # N static load ratings (61806 was the first output bearing)
@@ -100,8 +106,10 @@ if __name__ == "__main__":
           f" (x{T_disk_slip / T_carrier:.2f}); planet pins as dowels: {tau_pin_joint:.0f} MPa shear each")
     print(f"Motor: copper loss {P_cu(T_cont_duty):.0f} W at {T_cont_duty} N·m duty, {P_cu(Tc):.0f} W at the"
           f" {Tc} N·m continuous rating; peak-current limit {I_limit:.1f} A for {T_motor} N·m")
-    print(f"Housing in still air at {K_per_W:.2f} K/W: about {25 + K_per_W * P_cu(T_cont_duty):.0f} °C at the duty torque"
+    print(f"Housing on the pedestal in still air at {K_per_W:.2f} K/W (was {K_per_W_band:.2f} on the band): about {25 + K_per_W * P_cu(T_cont_duty):.0f} °C at the duty torque"
           f" (copper only), {25 + K_per_W * P_cu(Tc):.0f} °C at the motor's full continuous rating")
+    print(f"Pedestal screws: friction holds {slip_mount:.0f} N·m about the axis vs {T_out:.0f} N·m output reaction"
+          f" (x{slip_mount / T_out:.1f}), plus 2 dowels; {mount_engagement:.1f} mm = {mount_engagement / 5:.1f} d of M5 thread")
     print(f"Bond shear at {T_motor} N·m: stator {tau_stator_bond * 1000:.0f} kPa (half the bore bonded),"
           f" rotor {tau_rotor_bond * 1000:.0f} kPa vs about {lap_shear_2214:.0f} MPa lap shear")
     print(f"Output bearing CRBH 3510: {Fr_out:.0f} N radial, {Fa_out:.0f} N axial, {M_out:.2f} N·m tilting moment;"

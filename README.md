@@ -10,7 +10,7 @@ Each project lives in its own folder with everything needed to open, view or reb
 
 | Project | What it turned out to be | Folder |
 |---|---|---|
-| Unknown machine | Robot-joint actuator: BLDC motor + 5:1 planetary gearbox, hollow shaft, encoder, clamp mount | [`unknown-machine/`](unknown-machine/) |
+| Unknown machine | Robot-joint actuator: BLDC motor + 5:1 planetary gearbox, hollow shaft, encoder, bolted pedestal mount | [`unknown-machine/`](unknown-machine/) |
 | Robot arm | Six-axis arm with claw gripper, built from six sizes of the joint actuator; joints, poses and a pick-and-place animation | [`robot-arm/`](robot-arm/) |
 
 ## Tools

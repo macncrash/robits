@@ -6,7 +6,9 @@ actuator. Reading the outside features as a design intent:
 - toothed ring in the front recess = fixed ring gear of a planetary stage; the disk inside it is the planet
   carrier (the output) and the small hub with a bore is the output with a hollow cable pass-through;
 - knurled rear cap = encoder cover (encoder disk + read head on the end bell);
-- stainless band + top lever = quick-release cam clamp that holds the actuator in the pedestal saddle.
+- stainless band + top lever = a quick-release cam clamp in the image. It was dropped: the housing now sits
+  straight in the pedestal saddle on a thermal pad (the pedestal is its heat sink), held by 4 x M5 x 20 screws
+  from below and located by 2 x 4 mm dowels.
 
 Joints: the motor drives the gear train (coupling "spin", ratio 1 + ring/sun). Every part also has a slide
 joint so the animation "teardown" takes it apart in a service order; pose "exploded" shows it fully apart.
@@ -39,20 +41,20 @@ from components.planet_needle import planet_needle
 from components.ring_gear import ring_gear, ring_teeth
 from components.output_bearing import output_bearing
 from components.front_flange import front_flange
-from components.clamp_band import clamp_band
-from components.lever import lever
+from components.mount_dowel import mount_dowel
 from links import pedestal
 pedestal = pedestal()
 from components.bearing_6001_2rs_sealed_simple import bearing_6001_2rs_sealed_simple
 from components.iso4762_socket_head_cap_screw_m5x25 import iso4762_socket_head_cap_screw_m5x25
 from components.planet_pin import planet_pin
 from components.countersunk_socket_screw_m4_l0012_simple import countersunk_socket_screw_m4_l0012_simple
+from components.iso4762_socket_head_cap_screw_m5x20 import iso4762_socket_head_cap_screw_m5x20
 
 gear_z = 48  # Gear stage starts here (mm along the axis)
 
 design = Design("Unknown machine – planetary joint actuator")
 for part in (housing, end_bell, rear_cap, encoder_disk, read_head, stator, motor_rotor, rotor,
-             sun, carrier, carrier_disk, needle_bearing, ring_gear, output_bearing, front_flange, clamp_band, lever, pedestal):
+             sun, carrier, carrier_disk, needle_bearing, ring_gear, output_bearing, front_flange, pedestal):
     design.add(part)
 for k in range(3):
     angle = 120 * k
@@ -77,6 +79,12 @@ for k in range(3):
     a = math.radians(120 * k + 60)
     design.add(countersunk_socket_screw_m4_l0012_simple, at=(orbit * math.cos(a), orbit * math.sin(a), 65.5),
                name=f"disk_screw_{k + 1}")
+# Pedestal mount: ISO 4762 M5 x 20 from below (step.parts, origin under the head), heads on the counterbore floor
+# at y -64, ~10 mm of thread in the housing; two ISO 2338 4 x 12 dowels on the centre line.
+for k, (x, z) in enumerate((x, z) for z in (29, 39) for x in (-16, 16)):
+    design.add(iso4762_socket_head_cap_screw_m5x20, at=((x, -64, z), ("X", 90)), name=f"mount_screw_{k + 1}")
+for k, z in enumerate((22, 40)):
+    design.add(mount_dowel, at=(0, -62, z), name=f"mount_dowel_{k + 1}")
 
 # --- Working joints: motor -> sun -> planets -> carrier (ring gear fixed in the flange) ---
 carrier_ratio = sun_teeth / (sun_teeth + ring_teeth)
@@ -103,12 +111,12 @@ design.drive("spin", speed=360)
 design.couple("rotor_pull", {"rotor_axis.travel": 1}, limits=(-160, 0))
 design.couple("carrier_pull", {"carrier_axis.travel": 1}, limits=(0, 140))
 
-# --- Clamp lever on the band ---
-design.revolute("lever_pivot", "clamp_band", "lever", axis=((0, 68, 26), (1, 0, 0)), limits=(0, 100))
-
 # --- Teardown slides (0 = assembled) ---
-design.slider("band_out", "housing", "clamp_band", axis="Z", limits=(-140, 0))
 design.slider("pedestal_out", "housing", "pedestal", axis="Y", limits=(-80, 0))
+for k in range(1, 5):
+    design.slider(f"mount_screw_{k}_out", "pedestal", f"mount_screw_{k}", axis="Y", limits=(-50, 0))
+for k in range(1, 3):
+    design.rigid(f"mount_dowel_fit_{k}", "pedestal", f"mount_dowel_{k}")   # pressed into the pedestal
 design.slider("flange_out", "housing", "front_flange", axis="Z", limits=(0, 80))
 for k in range(len(SCREW_ANGLES)):
     design.slider(f"screw_{k + 1}_out", "housing", f"screw_{k + 1}", axis="Z", limits=(0, 100))
@@ -122,7 +130,7 @@ design.slider("stator_out", "housing", "stator", axis="Z", limits=(-110, 0))
 design.rigid("rotor_bonded", "rotor", "motor_rotor")   # KBM rotor bonded to the hub sleeve
 
 # Teardown: each stage keeps what the stages before it moved.
-design.pose("assembled", lever_pivot=0)
+design.pose("assembled", pedestal_out=0)
 keys, values = [("assembled", 0)], {}
 for i, (stage, moves) in enumerate(STAGES):
     values = {**values, **moves}
@@ -136,7 +144,8 @@ for a, b in [("rear_bearing", "end_bell"), ("rear_bearing", "rotor"), ("output_b
              ("motor_rotor", "rotor"), ("sun", "rotor"), ("encoder_disk", "rotor"), ("sun", "planet_*"),
              ("planet_*", "ring_gear"), ("ring_gear", "front_flange"), ("front_flange", "housing"),
              ("screw_*", "front_flange"), ("end_bell", "housing"), ("rear_cap", "end_bell"),
-             ("read_head", "end_bell"), ("clamp_band", "housing"), ("pin_*", "carrier")]:
+             ("read_head", "end_bell"), ("pedestal", "housing"), ("pin_*", "carrier"),
+             ("mount_screw_*", "pedestal"), ("mount_dowel_*", "pedestal"), ("mount_dowel_*", "housing")]:
     design.contact(a, b, kind="seated")
 design.contact("carrier_disk", "carrier", kind="seated")
 design.contact("pin_*", "carrier_disk", kind="seated")
@@ -146,6 +155,7 @@ for k in range(1, 4):
     design.contact(f"needle_p{k}", f"planet_{k}", kind="seated")
     design.contact(f"needle_p{k}", f"pin_{k}", kind="seated")
 design.contact("screw_*", "housing", kind="threaded")
+design.contact("mount_screw_*", "housing", kind="threaded")
 design.fit_check("fit", motion=False)
 
 result = design.result()

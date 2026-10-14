@@ -136,7 +136,8 @@ Flange slip torque with 12.9 steel screws: 315.0 N·m vs 16 N·m needed (x19.69)
 M5 thread engagement in aluminium: 9.5 mm = 1.9 d (aim >= 2 d)
 Carrier joint: 3 x M4 friction holds 25.3 N·m vs 23 N·m worst case (x1.10); planet pins as dowels: 12 MPa shear each
 Motor: copper loss 33 W at 1.3 N·m duty, 83 W at the 2.06 N·m continuous rating; peak-current limit 5.9 A for 4.0 N·m
-Housing in still air at 1.58 K/W: about 77 °C at the duty torque (copper only), 156 °C at the motor's full continuous rating
+Housing on the pedestal in still air at 1.20 K/W (was 1.58 on the band): about 64 °C at the duty torque (copper only), 124 °C at the motor's full continuous rating
+Pedestal screws: friction holds 134 N·m about the axis vs 20 N·m output reaction (x6.7), plus 2 dowels; 10.2 mm = 2.0 d of M5 thread
 Bond shear at 4.0 N·m: stator 12 kPa (half the bore bonded), rotor 94 kPa vs about 30 MPa lap shear
 Output bearing CRBH 3510: 150 N radial, 100 N axial, 3.45 N·m tilting moment; check the maker's moment rating (the old 61806: s0 19 on force alone)
 ```
@@ -266,7 +267,8 @@ All runs pass STEVE's balance checks (force and energy residuals around 1e-8 rel
 - **Continuous torque is limited by the housing, not the motor.** At the motor's own 2.06 N·m continuous
   rating, copper loss alone is about 83 W, which would put this housing at about 156 °C in still air. In
   this package, without a heat path through the pedestal or airflow, plan on about 1.3–1.5 N·m continuous
-  motor torque (6.5–7.5 N·m at the output). Full 4 N·m peaks are fine for short bursts.
+  motor torque (6.5–7.5 N·m at the output). Full 4 N·m peaks are fine for short bursts. *(Superseded: with the
+  housing bolted into the pedestal, see the next section.)*
 - **Bonds.** At 4 N·m, the stator bond sees about 12 kPa of shear (with only half the bore bonded) and the
   rotor bond about 94 kPa. Both are hundreds of times below the about 30 MPa lap shear of Scotchweld 2214.
   The bond's real limits are temperature and cure, not strength: stay under the adhesive's rated temperature,
@@ -274,6 +276,47 @@ All runs pass STEVE's balance checks (force and energy residuals around 1e-8 rel
 - **Not yet modelled.** The stator and rotor geometry still uses estimated bore and OD values until
   Kollmorgen's STEP model replaces them. The housing studies don't depend on those values; the stator OD and
   length are catalog values.
+
+### Pedestal mount (clamp removed)
+
+The clamp band and lever were removed. The housing now sits straight in a pedestal saddle bored to its
+diameters, on a thermal pad. It is held by 4 × M5 × 20 screws from below and located by 2 × 4 mm dowels (see
+[Pedestal mount](../README.md#pedestal-mount)). The thermal-stress results above no longer apply: aluminium
+bolted to aluminium has no expansion mismatch at the joint.
+
+STEVE parts: Motor housing rev 5 (with the mount holes), Pedestal rev 4. There is also a new study model,
+"Housing on pedestal (study model)". It links both parts and fuses them into one solid, which treats the
+saddle joint as perfectly bonded. That is a fair model for small vibrations and for heat through a pad held
+closed by about 16 kN of screw preload. It is an upper bound on how much heat and stiffness the joint passes.
+
+| Study | Setup | Result |
+|---|---|---|
+| Housing stress | Ring reaction 16 N·m + 150 N radial / 100 N axial on the bearing seat; held by the 4 tapped holes alone (saddle contact left out) | 9.8 MPa, 8.6 µm; peak at the held holes, about 28× below yield |
+| Housing modal | Held by the 4 tapped holes alone | 903 Hz: the housing rocks on the two screw rows, which are only 10 mm apart. A lower bound: the saddle is ignored |
+| Housing on pedestal, modal | Saddle bonded, base face fixed, original 44 mm saddle block | 1.33 kHz |
+| Housing on pedestal, modal | Same, saddle block lengthened to z −20 (under the fins) | **1.82 kHz** |
+| Housing on pedestal, heat | 40 W into the stator bore, h = 12 W/m²K on the outside, base insulated | **69–73 °C** (1.20 K/W, was 1.58 K/W on the band) |
+| Housing on pedestal, heat | Same, base held at 35 °C (bolted to a metal structure) | **35–44 °C**; 28 W of the 40 W go out through the base |
+
+All runs pass the balance checks. Meshing notes: the default 7 mm quadratic mesh failed its high-order pass
+around the small tapped holes. The stress study ran at 3 mm. The modal studies ran at 4 mm with
+`high_order_optimization: optimization`. The face list STEVE returns is cut off after the 60 largest faces, so
+convection was applied to those outer faces only. That leaves out some small faces, so the temperatures are
+slightly high (conservative).
+
+What it means:
+
+- **Heat.** Continuous torque is now limited by the motor rather than the housing, as long as the pedestal is
+  bolted to metal. With the base held at 35 °C, the housing runs at about 35 + 0.23 K/W × P. At the KBM's full
+  2.06 N·m continuous rating (83 W copper loss) that is about 55 °C. On an insulating base it is
+  25 + 1.20 × P, about 124 °C at 83 W, so derate there or add airflow.
+- **Vibration.** The 1.82 kHz system mode has no motor, gears or bearings in it. Scaling by mass, those parts
+  (about 1.5 kg) on the 0.64 kg housing would bring it to roughly 1 kHz. That's a rough estimate, but it is
+  still above the 720 Hz gear mesh at 3000 rpm. Lengthening the saddle block raised the mode by 37%. If the
+  measured mode turns out close to the mesh frequency, spread the screw rows further apart along the axis
+  next. The side cable port, at z 10–24, currently stops the rear row from moving back.
+- **Screws.** Friction alone holds 134 N·m about the axis (`hand_calcs.py`) against 20 N·m of output reaction.
+  Each screw has 10 mm (2 d) of thread.
 
 These are idealised estimates for a speculative concept, not a certification. Nothing here makes the design
 safe for real-world use. See the repository license (MIT, no warranty).

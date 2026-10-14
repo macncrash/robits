@@ -133,11 +133,11 @@ Planet pin: load 341 N, bending 26 MPa, journal p 4.7 MPa, v 0.50 m/s, PV 2.38 M
 Flange slip torque with A2-70 stainless screws: 120.0 N·m vs 16 N·m needed (x7.50)
 Flange slip torque with 8.8 steel screws: 210.0 N·m vs 16 N·m needed (x13.12)
 Flange slip torque with 12.9 steel screws: 315.0 N·m vs 16 N·m needed (x19.69)
-M5 thread engagement in aluminium: 9.5 mm = 1.9 d (aim >= 2 d)
+Flange M5 thread engagement in aluminium: 14.5 mm = 2.9 d (aim >= 2 d); carrier M4 in 303: 11.0 mm = 2.75 d
 Carrier joint: 3 x M4 friction holds 25.3 N·m vs 23 N·m worst case (x1.10); planet pins as dowels: 12 MPa shear each
 Motor: copper loss 33 W at 1.3 N·m duty, 83 W at the 2.06 N·m continuous rating; peak-current limit 5.9 A for 4.0 N·m
-Housing on the pedestal in still air at 1.20 K/W (was 1.58 on the band): about 64 °C at the duty torque (copper only), 124 °C at the motor's full continuous rating
-Pedestal screws: friction holds 134 N·m about the axis vs 20 N·m output reaction (x6.7), plus 2 dowels; 10.2 mm = 2.0 d of M5 thread
+Housing on the pedestal in still air at 1.21 K/W (was 1.58 on the band): about 65 °C at the duty torque (copper only), 125 °C at the motor's full continuous rating
+Pedestal screws: friction holds 144 N·m about the axis vs 20 N·m output reaction (x7.2), plus 2 dowels; 11.8 mm = 2.4 d of M5 thread
 Bond shear at 4.0 N·m: stator 12 kPa (half the bore bonded), rotor 94 kPa vs about 30 MPa lap shear
 Output bearing CRBH 3510: 150 N radial, 100 N axial, 3.45 N·m tilting moment; check the maker's moment rating (the old 61806: s0 19 on force alone)
 ```
@@ -151,7 +151,7 @@ Output bearing CRBH 3510: 150 N radial, 100 N axial, 3.45 N·m tilting moment; c
 | Planet pins (ISO 2338 6×18, hardened) | OK in bending | FEA ≈ 50 MPa at the press-fit edge (hand calculation 26 MPa nominal), about 20× below yield |
 | **Planet journals** | **Too hot for plain sliding** | PV 2.4 MPa·m/s at 3000 rpm continuous. Fit a drawn-cup needle bearing in each planet (6 mm bore, 10 mm OD; the planet has room for it), or limit continuous speed. |
 | Flange screws (4 × M5) | OK | Friction holds 7.5× the ring reaction, even with stainless screws |
-| M5 threads in the aluminium housing | Borderline | 1.9 d engagement. Use thread inserts or tap 2–3 mm deeper. |
+| M5 threads in the aluminium housing | OK (fixed) | Was 1.9 d. Front grown to Ø120, M5 × 30 flange screws: 2.9 d with a 7.9 mm wall; pedestal screws 2.2 d. All checked by STEVE's fastener check. |
 | Output bearing 61806 | OK for force, weak for moment | A single thin deep-groove row has to carry the arm's tilting moment. A real robot joint would use a crossed-roller bearing here. |
 | Carrier | OK | Peak stress factor ≥ 9. Add a fillet (up to about 0.5 mm, to clear the 61806 inner ring) at the sleeve-to-plate corner. |
 | Pedestal | Heavily oversized | Can be lightened |
@@ -216,7 +216,7 @@ posts, from Ø70 bar: about 80% of the bar became chips, in gummy 304. It is now
 - **Rear part:** sleeve, rear plate and three posts, milled from the open front face. Tapped M4 in each post.
 - **Front disk + output hub:** turned, with three 90° countersinks. The disk is 5 mm thick (was 3) so the heads
   sit flush; the output face stays at z 72.
-- **Joint:** 3 × ISO 10642 M4 × 12 (A2-70) into the posts, 7 mm of thread each. The three planet pins pass
+- **Joint:** 3 × ISO 10642 M4 × 16 (A2-70) into the posts, 11 mm (2.75 d) of thread each (was M4 × 12, 7 mm). The three planet pins pass
   through both pieces and act as the dowels. Bore the pin holes with both pieces clamped together.
 - **Material:** AISI 303 (1.4305), the free-machining grade. STEVE's library has no 303, so the model uses
   304, which has the same stiffness and density and a slightly lower yield (215 vs about 240 MPa annealed).
@@ -284,23 +284,24 @@ diameters, on a thermal pad. It is held by 4 × M5 × 20 screws from below and l
 [Pedestal mount](../README.md#pedestal-mount)). The thermal-stress results above no longer apply: aluminium
 bolted to aluminium has no expansion mismatch at the joint.
 
-STEVE parts: Motor housing rev 5 (with the mount holes), Pedestal rev 4. There is also a new study model,
+STEVE parts: Motor housing rev 6 (Ø120 front, deeper threads), Pedestal rev 7. There is also a new study model,
 "Housing on pedestal (study model)". It links both parts and fuses them into one solid, which treats the
 saddle joint as perfectly bonded. That is a fair model for small vibrations and for heat through a pad held
 closed by about 16 kN of screw preload. It is an upper bound on how much heat and stiffness the joint passes.
 
 | Study | Setup | Result |
 |---|---|---|
-| Housing stress | Ring reaction 16 N·m + 150 N radial / 100 N axial on the bearing seat; held by the 4 tapped holes alone (saddle contact left out) | 9.8 MPa, 8.6 µm; peak at the held holes, about 28× below yield |
-| Housing modal | Held by the 4 tapped holes alone | 903 Hz: the housing rocks on the two screw rows, which are only 10 mm apart. A lower bound: the saddle is ignored |
+| Housing stress | Ring reaction 16 N·m + 150 N radial / 100 N axial on the bearing seat; held by the 4 tapped holes alone (saddle contact left out) | 8.4 MPa, 6.6 µm (9.8 MPa, 8.6 µm with the Ø112 front); peak at the held holes, about 33× below yield |
+| Housing modal | Held by the 4 tapped holes alone | 922 Hz (903 Hz before): the housing rocks on the two screw rows, which are only 9 mm apart. A lower bound: the saddle is ignored |
 | Housing on pedestal, modal | Saddle bonded, base face fixed, original 44 mm saddle block | 1.33 kHz |
-| Housing on pedestal, modal | Same, saddle block lengthened to z −20 (under the fins) | **1.82 kHz** |
-| Housing on pedestal, heat | 40 W into the stator bore, h = 12 W/m²K on the outside, base insulated | **69–73 °C** (1.20 K/W, was 1.58 K/W on the band) |
+| Housing on pedestal, modal | Same, saddle block lengthened to z −20 (under the fins) | 1.82 kHz |
+| Housing on pedestal, modal | Same, Ø120 front and the re-placed screw rows (current) | **1.75 kHz** |
+| Housing on pedestal, heat | 40 W into the stator bore, h = 12 W/m²K on the outside, base insulated | **69–73 °C** (1.20 K/W, was 1.58 K/W on the band); unchanged by the Ø120 front |
 | Housing on pedestal, heat | Same, base held at 35 °C (bolted to a metal structure) | **35–44 °C**; 28 W of the 40 W go out through the base |
 
 All runs pass the balance checks. Meshing notes: the default 7 mm quadratic mesh failed its high-order pass
-around the small tapped holes. The stress study ran at 3 mm. The modal studies ran at 4 mm with
-`high_order_optimization: optimization`. The face list STEVE returns is cut off after the 60 largest faces, so
+around the small tapped holes. The stress study ran at 3 mm. The modal studies, and since the Ø120 front the
+heat studies too, ran at 4 mm with `high_order_optimization: optimization`. The face list STEVE returns is cut off after the 60 largest faces, so
 convection was applied to those outer faces only. That leaves out some small faces, so the temperatures are
 slightly high (conservative).
 
@@ -310,13 +311,46 @@ What it means:
   bolted to metal. With the base held at 35 °C, the housing runs at about 35 + 0.23 K/W × P. At the KBM's full
   2.06 N·m continuous rating (83 W copper loss) that is about 55 °C. On an insulating base it is
   25 + 1.20 × P, about 124 °C at 83 W, so derate there or add airflow.
-- **Vibration.** The 1.82 kHz system mode has no motor, gears or bearings in it. Scaling by mass, those parts
+- **Vibration.** The 1.75 kHz system mode has no motor, gears or bearings in it. Scaling by mass, those parts
   (about 1.5 kg) on the 0.64 kg housing would bring it to roughly 1 kHz. That's a rough estimate, but it is
   still above the 720 Hz gear mesh at 3000 rpm. Lengthening the saddle block raised the mode by 37%. If the
   measured mode turns out close to the mesh frequency, spread the screw rows further apart along the axis
-  next. The side cable port, at z 10–24, currently stops the rear row from moving back.
-- **Screws.** Friction alone holds 134 N·m about the axis (`hand_calcs.py`) against 20 N·m of output reaction.
-  Each screw has 10 mm (2 d) of thread.
+  next. The side cable port, now at z 6–20, currently stops the rear row from moving back.
+- **Screws.** Friction alone holds 144 N·m about the axis (`hand_calcs.py`) against 20 N·m of output reaction.
+  Each screw has about 11 mm (2.2 d) of thread; see [Screw threads](../README.md#screw-threads).
+
+### What the actuator delivers at its output (torque and speed)
+
+![Torque and power against output speed](motor-curves.png)
+
+[`motor_curves.py`](motor_curves.py) works out the limits at the output shaft from the KBM-17H01-B00 catalogue
+values (winding B: Kt 0.681 N·m/A, back-EMF 41.2 V/krpm, 6.02 Ω line-line), the 325 V DC bus of the 240 Vac
+drive and the 5:1 planetary at an assumed 97%. The bus is fixed, so voltage sets the top speed and current
+sets the torque:
+
+| Limit | Torque at the output | Flat up to | Peak power | Copper loss there |
+|---|---|---|---|---|
+| Continuous rating, 3.11 A | 10.3 N·m | 981 rpm | 1.06 kW | 87 W |
+| Drive peak limit, 5.9 A | 18.3 N·m | 910 rpm | 1.74 kW | 314 W |
+| Motor peak, 10.9 A (catalogue) | 29.8 N·m | 784 rpm | 2.44 kW | 1073 W |
+
+No-load output speed is 1060 rpm. Below the corner the drive's current limit sets the torque; above it the
+back-EMF uses up the bus and torque falls to zero at no load. Peak power is at the corner. The peak rows are
+for seconds only: 314 W of copper loss would heat the housing far past the 40–83 W cases studied above.
+
+Two assumptions to check against the drive and the motor: the 5% of the bus kept as control headroom, and the
+torque roll-off above 3.11 A (a straight line fitted to the catalogue's 6.14 N·m at 10.9 A). With that roll-off,
+5.9 A gives 3.77 N·m at the motor, not the 4.0 N·m the gears were sized for; 4.0 N·m needs about 6.3 A.
+Winding inductance, iron loss and friction are left out, so the real corner speed is a little lower.
+
+`python3 motor_curves.py --render` writes [motor-curves.csv](motor-curves.csv), the chart and an animated
+version, [motor-curves-chart.mp4](motor-curves-chart.mp4). The same model also runs as a particle sim in
+Gravity ([gravity/actuator_envelope.js](gravity/actuator_envelope.js)). It runs 27,000 virtual actuators,
+each spinning up from rest against its own load, and the swarm traces the envelope:
+[gravity/actuator-envelope-sim.mp4](gravity/actuator-envelope-sim.mp4). The two are joined, with labels, in
+**[motor-showcase.mp4](motor-showcase.mp4)** (32 s), made by
+[gravity/make_showcase.py](gravity/make_showcase.py). The sim's knobs (bus voltage, current limit, gear
+ratio, arm inertia) work live in the Gravity app; paste the module into its editor.
 
 These are idealised estimates for a speculative concept, not a certification. Nothing here makes the design
 safe for real-world use. See the repository license (MIT, no warranty).

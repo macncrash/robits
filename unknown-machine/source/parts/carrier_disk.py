@@ -1,6 +1,6 @@
 """Planet carrier, front disk with the output hub (assembled position, z 60.5..72). Unknown-machine actuator.
 
-Bolts to the rear part's three bridge posts with ISO 10642 M4 x 12 countersunk screws (heads flush with the
+Bolts to the rear part's three bridge posts with ISO 10642 M4 x 16 countersunk screws (11 mm of thread, 2.75 d) (heads flush with the
 front face); the three ISO 2338 planet pins end in blind holes here and locate the two parts. The arm bolts to
 the six M4 load holes. Bore the pin holes with both parts clamped together so the pins stay parallel.
 Parameters: gear stage (sets the planet orbit), disk thickness, countersink diameter.
@@ -14,7 +14,7 @@ module = 1  # mm Gear module (pitch diameter = module x teeth)
 sun_teeth = 18  # count Sun gear teeth
 planet_teeth = 27  # count Planet gear teeth (ring = sun + 2 x planet)
 disk_t = 5  # mm Front disk thickness (z 60.5 up)
-csk_d = 9.4  # mm Countersink diameter for an ISO 10642 M4 head (90 deg)
+csk_d = 9.0  # mm Countersink diameter for an ISO 10642 M4 head (90 deg, head 8.96): head flush, not sunk
 pin_depth = 2  # mm Planet pin engagement in the disk
 
 orbit = module * (sun_teeth + planet_teeth) / 2  # Planet centres

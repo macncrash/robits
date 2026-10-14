@@ -15,9 +15,13 @@ The shop around it, each on its own STEVE design:
 - **[Bench grinder](bench-grinder/)**: a separate machine on a pedestal stand, with the same KBM motor in direct
   drive (no gearbox).
 - **[Disc sander](disc-sander/)**: a separate machine on a bench stand, with a second complete actuator.
+- **[Cold saw](cold-saw/)**: a metal-cutting chop saw on a stand. An actuator drives a 20:1 worm gearbox to turn a
+  Ø250 HSS blade at 0–53 rpm, with about 150 N·m at the blade.
+- **[Vertical band saw](band-saw/)**: a separate machine on a stand. An actuator drives the lower wheel through a 5:1
+  timing belt, giving a blade speed of 0–166 m/min set on the drive, with a tilting table.
 
 STEVE design: [Manual mini lathe (unknown-machine accessory catalogue)](https://stevecad.studio/?document=98a99a95-122c-4111-938b-02c01a86c017),
-revision 11. It links the actuator (revision 36) and the chuck backplate, and passes its fit check (435 part
+revision 13. It links the actuator (revision 36) and the chuck backplate, and passes its fit check (435 part
 pairs). The CadQuery source is in [`source/`](source/); the branches' `main.py` files are in
 [`source/branches/`](source/branches/) (every other file is shared with main).
 

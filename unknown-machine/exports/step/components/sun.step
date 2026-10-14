@@ -1,8 +1,8 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Open CASCADE Model'),'2;1');
-FILE_NAME('Open CASCADE Shape Model','2026-10-12T01:47:35',('macncrash'),(
-    'Open CASCADE'),'Open CASCADE STEP processor 7.9','Open CASCADE 7.9'
+FILE_NAME('Open CASCADE Shape Model','2026-10-14T05:59:37',('Author'),(
+    'Open CASCADE'),'Open CASCADE STEP processor 8.0','Open CASCADE 8.0'
   ,'Unknown');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;
@@ -15,8 +15,8 @@ DATA;
 #4 = PRODUCT_DEFINITION_SHAPE('','',#5);
 #5 = PRODUCT_DEFINITION('design','',#6,#9);
 #6 = PRODUCT_DEFINITION_FORMATION('','',#7);
-#7 = PRODUCT('Open CASCADE STEP translator 7.9 10',
-  'Open CASCADE STEP translator 7.9 10','',(#8));
+#7 = PRODUCT('Open CASCADE STEP translator 8.0 10',
+  'Open CASCADE STEP translator 8.0 10','',(#8));
 #8 = PRODUCT_CONTEXT('',#2,'mechanical');
 #9 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #10 = SHAPE_REPRESENTATION('',(#11,#15),#19);
@@ -21307,7 +21307,7 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #18394 = ITEM_DEFINED_TRANSFORMATION('','',#11,#15);
 #18395 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #18396);
-#18396 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('39','Sun gear','',#5,#27,$);
+#18396 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('49','Sun gear','',#5,#27,$);
 #18397 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#29));
 ENDSEC;
 END-ISO-10303-21;

@@ -102,14 +102,18 @@ source/                      CadQuery source for the STEVE CAD design
 analysis/
   README.md                  stress / strain results (FEA and hand calculations) and what they mean
   hand_calcs.py              gear, pin, bolt and bearing checks; plain Python 3
+  motor_curves.py            output torque / power vs speed (chart, CSV, animated chart)
+  motor-showcase.mp4         32 s video: Gravity particle sim of the envelope, then the chart
+  gravity/                   the Gravity sim module, its render and the script that joins the video
 exports/
   step/unknown-machine-assembly.step   full assembly, every part in place
-  step/components/*.step               one STEP per part
-  stl/*.stl                            one STL mesh per part, mm, made from the STEP files
+  step/components/*.step               one STEP per part, as modelled (catalogue parts at their own origin)
+  stl/*.stl                            one STL mesh per part type, mm, in its assembled position (design frame)
 ```
 
-Part files sit at their assembled position, except `planet`, `planet_pin`, `flange_screw` and `rear_bearing`.
-Those are modelled at their own origin and placed by `source/main.py` (3×, 3×, 4× and 1×).
+The STL files all sit where the part goes in the assembly; for parts used several times (planets, pins,
+screws, dowels) the file is the first one. In `step/components`, made parts sit at their assembled position
+and the catalogue parts (bearing, screws) at their own origin; `source/main.py` places them.
 
 There are no DXF files because nothing in this design is sheet metal or laser-cut flat stock.
 
@@ -278,8 +282,8 @@ block end; it was 0.25 mm) and the side cable port moved 2 mm toward the fins.
   Still open: a fillet at the carrier's sleeve-to-plate corner, and the KBM stator bore and end turns from
   Kollmorgen's 3D model (behind a free account login).
 - The STEVE assembly (design revision 36) builds and passes its fit check (741 part pairs, nothing new or
-  worse) with all these changes. The STEP and STL files in `exports/` haven't been regenerated yet and still show the revision 18
-  geometry: re-export them from the STEVE model.
+  worse) with all these changes. `exports/` and the two renders above are from that revision: the assembly STEP,
+  one STEP per component, and one STL per part type in its assembled position (design frame, mm).
 - The gears in the assembly source still have sharp tooth roots. The separate STEVE gear parts used for the
   stress studies add the standard 0.38 mm root fillet.
 - Provided under the repository's [MIT license](../LICENSE), without warranty of any kind.

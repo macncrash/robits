@@ -3,6 +3,8 @@
 Bolts to the rear part's three bridge posts with ISO 10642 M4 x 16 countersunk screws (11 mm of thread, 2.75 d) (heads flush with the
 front face); the three ISO 2338 planet pins end in blind holes here and locate the two parts. The arm bolts to
 the six M4 load holes. Bore the pin holes with both parts clamped together so the pins stay parallel.
+Turned (disk, Ø20 g6 output pilot, relief groove at the pilot root) then drilled; pin holes bored with the rear
+part clamped on. CNC notes: build-pack/cnc/carrier_disk.md.
 Parameters: gear stage (sets the planet orbit), disk thickness, countersink diameter.
 """
 import math
@@ -40,6 +42,22 @@ for k in range(6):                                   # M4 tapped holes (tap dril
     a = math.radians(60 * k + 30)
     disk.cylinder(f"load_hole_{k + 1}", 1.65, disk_t, at=(25 * math.cos(a), 25 * math.sin(a), z0), op="cut",
                   name=f"Load hole {k + 1}")
+disk.add("pilot_relief", cq.Solid.makeCylinder(10.3, 1.1, cq.Vector(0, 0, face - 0.3)).cut(
+    cq.Solid.makeCylinder(9.7, 1.1, cq.Vector(0, 0, face - 0.3))), op="cut", name="Relief 0.3 x 0.3 at the pilot root")
+
+
+def edge_break(r, z, size, out, up):
+    """45 deg chamfer ring at the circular edge (r, z) to cut away; out/up: the side the material is on."""
+    e = 0.5
+    pts = [(r + out * size, z), (r + out * size, z - up * e), (r - out * e, z - up * e), (r - out * e, z + up * size),
+           (r, z + up * size)]
+    return cq.Workplane("XZ").polyline(pts).close().revolve(360, (0, 0, 0), (0, 1, 0)).val()
+
+
+for k, (r, z, size, out, up) in enumerate(((10, 72, 0.5, -1, -1),      # output pilot lead-in
+                                           (4, 72, 0.3, 1, -1), (4, z0, 0.3, 1, 1),   # cable bore
+                                           (33, face, 0.5, -1, -1), (33, z0, 0.3, -1, 1))):   # disk OD
+    disk.add(f"edge_break_{k + 1}", edge_break(r, z, size, out, up), op="cut", name=f"Edge break {k + 1}")
 disk.material("stainless-304", finish="brushed")   # specified AISI 303 (1.4305, free-machining); not in the library, 304 stand-in
 
 result = disk.result()

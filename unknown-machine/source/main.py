@@ -5,12 +5,16 @@ actuator. Reading the outside features as a design intent:
 - finned can = frameless BLDC motor (stator, windings, magnet rotor on a hollow shaft);
 - toothed ring in the front recess = fixed ring gear of a planetary stage; the disk inside it is the planet
   carrier (the output) and the small hub with a bore is the output with a hollow cable pass-through;
-- knurled rear cap = encoder cover (encoder disk + read head on the end bell);
+- knurled rear cap = encoder cover: an RLS AksIM-2 size 039 ring on a hub on the shaft, read by its readhead on four
+  standoffs on the end bell;
 - stainless band + top lever = a quick-release cam clamp in the image. It was dropped: the housing now sits
   straight in the pedestal saddle on a thermal pad (the pedestal is its heat sink), held by 4 x M5 x 20 screws
   from below and located by 2 x 4 mm dowels.
 Screw joints are declared with design.fasten and checked every build (engagement, bottoming, walls); threads in
 the aluminium housing get at least 2.2 d of engagement (rule set to 2 d: conservative for 6061-T6 with A2-70).
+Bearings are retained axially: CRBH 3510 outer ring by a clamp ring under the front flange, inner ring by a carrier
+shoulder and a DIN 471 35 ring; 6001 by DIN 471 12 rings on the shaft and a DIN 472 28 ring in the end bell (rings
+not modelled, grooves are). CNC notes for every made part: build-pack/cnc/.
 
 Joints: the motor drives the gear train (coupling "spin", ratio 1 + ring/sun). Every part also has a slide
 joint so the animation "teardown" takes it apart in a service order; pose "exploded" shows it fully apart.
@@ -22,12 +26,16 @@ from steve import Design
 from params import sun_teeth, planet_teeth, module
 
 orbit = module * (sun_teeth + planet_teeth) / 2  # Planet centres
-from assembly_data import STAGES, SCREW_ANGLES, SCREW_PCD
+from assembly_data import STAGES, SCREW_ANGLES, SCREW_PCD, BELL_SCREWS, CAP_SCREWS, READHEAD_HOLES, RING_SCREWS
 from components.housing import housing
 from components.end_bell import end_bell
 from components.rear_cap import rear_cap
-from components.encoder_disk import encoder_disk
-from components.read_head import read_head
+from components.encoder_hub import encoder_hub
+from components.encoder_ring import encoder_ring
+from components.readhead import readhead
+from components.standoff import standoff
+from components.ring_screw import ring_screw
+from components.bearing_clamp import bearing_clamp
 from components.stator import stator
 from components.motor_rotor import motor_rotor
 from components.rotor import rotor
@@ -51,12 +59,15 @@ from components.planet_pin import planet_pin
 from components.iso4762_socket_head_cap_screw_m5x20 import iso4762_socket_head_cap_screw_m5x20
 from components.iso4762_socket_head_cap_screw_m5x30 import iso4762_socket_head_cap_screw_m5x30
 from components.countersunk_socket_screw_m4_l0016_simple import countersunk_socket_screw_m4_l0016_simple   # A2-70
+from components.iso4762_socket_head_cap_screw_m4x16 import iso4762_socket_head_cap_screw_m4x16
+from components.button_head_screw_m3_l0025_simple import button_head_screw_m3_l0025_simple
+from components.iso4762_socket_head_cap_screw_m2x6 import iso4762_socket_head_cap_screw_m2x6
 
 gear_z = 48  # Gear stage starts here (mm along the axis)
 
 design = Design("Unknown machine – planetary joint actuator")
-for part in (housing, end_bell, rear_cap, encoder_disk, read_head, stator, motor_rotor, rotor,
-             sun, carrier, carrier_disk, needle_bearing, ring_gear, output_bearing, front_flange, pedestal):
+for part in (housing, end_bell, rear_cap, encoder_hub, encoder_ring, readhead, stator, motor_rotor, rotor,
+             sun, carrier, carrier_disk, needle_bearing, ring_gear, output_bearing, bearing_clamp, front_flange, pedestal):
     design.add(part)
 for k in range(3):
     angle = 120 * k
@@ -87,13 +98,29 @@ for k, (x, z) in enumerate((x, z) for z in (28, 37) for x in (-16, 16)):
     design.add(iso4762_socket_head_cap_screw_m5x20, at=((x, -66, z), ("X", 90)), name=f"mount_screw_{k + 1}")
 for k, z in enumerate((22, 40)):
     design.add(mount_dowel, at=(0, -66, z), name=f"mount_dowel_{k + 1}")
+# End bell to housing: 4 x ISO 4762 M4 x 16 (step.parts, origin under the head) in counterbores, PCD 92, 8.5 mm of thread.
+for k, (x, y) in enumerate(BELL_SCREWS):
+    design.add(iso4762_socket_head_cap_screw_m4x16, at=((x, y, -43.5), ("X", 180)), name=f"bell_screw_{k + 1}")
+# Rear cap to end bell: 3 x ISO 7380 M3 x 25 button head through the cap's bosses, 8 mm of thread.
+for k, (x, y) in enumerate(CAP_SCREWS):
+    design.add(button_head_screw_m3_l0025_simple, at=((x, y, -65), ("X", 180)), name=f"cap_screw_{k + 1}")
+# Encoder (RLS AksIM-2 size 039): 4 standoffs on the end bell, readhead on them with 4 x ISO 4762 M2 x 6, ring on the hub
+# with 8 x ISO 7046 M2 x 6 countersunk.
+for k, (x, y) in enumerate(READHEAD_HOLES):
+    design.add(standoff, at=(x, y, -48), name=f"standoff_{k + 1}")
+    design.add(iso4762_socket_head_cap_screw_m2x6, at=((x, y, -56.98), ("X", 180)), name=f"head_screw_{k + 1}")
+for k, (x, y) in enumerate(RING_SCREWS):
+    design.add(ring_screw, at=(x, y, -54.5), name=f"ring_screw_{k + 1}")
 
 # --- Working joints: motor -> sun -> planets -> carrier (ring gear fixed in the flange) ---
 carrier_ratio = sun_teeth / (sun_teeth + ring_teeth)
 planet_ratio = -(sun_teeth / planet_teeth) * (1 - carrier_ratio)
 design.cylindrical("rotor_axis", "housing", "rotor", axis="Z", slide_limits=(-160, 0))
 design.slider("sun_key", "rotor", "sun", axis="Z", limits=(0, 300))   # keyed; slides off the shaft nose forward
-design.slider("encoder_out", "rotor", "encoder_disk", axis="Z", limits=(-310, 0))
+design.slider("encoder_out", "rotor", "encoder_hub", axis="Z", limits=(-310, 0))   # hub: Loctite 641 + set screw
+design.rigid("ring_on_hub", "encoder_hub", "encoder_ring")
+for k in range(len(RING_SCREWS)):
+    design.rigid(f"ring_screw_fit_{k + 1}", "encoder_hub", f"ring_screw_{k + 1}")
 design.cylindrical("carrier_axis", "housing", "carrier", axis="Z", slide_limits=(0, 140))
 design.rigid("needle_fit", "carrier", "needle_bearing")
 design.rigid("disk_bolted", "carrier", "carrier_disk")   # 3 x M4 countersunk screws, located by the planet pins
@@ -119,15 +146,23 @@ for k in range(1, 5):
     design.slider(f"mount_screw_{k}_out", "pedestal", f"mount_screw_{k}", axis="Y", limits=(-50, 0))
 for k in range(1, 3):
     design.rigid(f"mount_dowel_fit_{k}", "pedestal", f"mount_dowel_{k}")   # pressed into the pedestal
-design.slider("flange_out", "housing", "front_flange", axis="Z", limits=(0, 80))
+design.slider("flange_out", "housing", "front_flange", axis="Z", limits=(0, 200))
 for k in range(len(SCREW_ANGLES)):
-    design.slider(f"screw_{k + 1}_out", "housing", f"screw_{k + 1}", axis="Z", limits=(0, 100))
-design.slider("ring_out", "housing", "ring_gear", axis="Z", limits=(0, 100))
-design.slider("output_bearing_out", "housing", "output_bearing", axis="Z", limits=(0, 80))
+    design.slider(f"screw_{k + 1}_out", "housing", f"screw_{k + 1}", axis="Z", limits=(0, 250))
+design.slider("ring_out", "housing", "ring_gear", axis="Z", limits=(0, 250))
+design.slider("output_bearing_out", "housing", "output_bearing", axis="Z", limits=(0, 150))
+design.slider("clamp_out", "housing", "bearing_clamp", axis="Z", limits=(0, 150))   # captive between carrier and bearing
 design.slider("cap_out", "housing", "rear_cap", axis="Z", limits=(-280, 0))
+for k in range(len(CAP_SCREWS)):
+    design.slider(f"cap_screw_{k + 1}_out", "rear_cap", f"cap_screw_{k + 1}", axis="Z", limits=(-40, 0))
+design.slider("readhead_out", "housing", "readhead", axis="Z", limits=(-280, 0))
+for k in range(len(READHEAD_HOLES)):
+    design.rigid(f"head_screw_fit_{k + 1}", "readhead", f"head_screw_{k + 1}")
+    design.rigid(f"standoff_fit_{k + 1}", "end_bell", f"standoff_{k + 1}")
 design.slider("end_bell_out", "housing", "end_bell", axis="Z", limits=(-210, 0))
+for k in range(len(BELL_SCREWS)):
+    design.slider(f"bell_screw_{k + 1}_out", "end_bell", f"bell_screw_{k + 1}", axis="Z", limits=(-40, 0))
 design.rigid("rear_bearing_fit", "end_bell", "rear_bearing")
-design.rigid("read_head_mount", "end_bell", "read_head")
 design.slider("stator_out", "housing", "stator", axis="Z", limits=(-110, 0))
 design.rigid("rotor_bonded", "rotor", "motor_rotor")   # KBM rotor bonded to the hub sleeve
 
@@ -143,11 +178,14 @@ design.animation("teardown", keys + [(dict(values), len(STAGES) + 1.5)], loop=Fa
 # Designed contacts (seats, press fits, gear meshes, threads); everything else must not touch.
 for a, b in [("rear_bearing", "end_bell"), ("rear_bearing", "rotor"), ("output_bearing", "housing"),
              ("output_bearing", "carrier"), ("needle_bearing", "carrier"), ("stator", "housing"),
-             ("motor_rotor", "rotor"), ("sun", "rotor"), ("encoder_disk", "rotor"), ("sun", "planet_*"),
+             ("motor_rotor", "rotor"), ("sun", "rotor"), ("encoder_hub", "rotor"), ("sun", "planet_*"),
              ("planet_*", "ring_gear"), ("ring_gear", "front_flange"), ("front_flange", "housing"),
              ("screw_*", "front_flange"), ("end_bell", "housing"), ("rear_cap", "end_bell"),
-             ("read_head", "end_bell"), ("pedestal", "housing"), ("pin_*", "carrier"),
-             ("mount_screw_*", "pedestal"), ("mount_dowel_*", "pedestal"), ("mount_dowel_*", "housing")]:
+             ("readhead", "standoff_*"), ("pedestal", "housing"), ("pin_*", "carrier"),
+             ("mount_screw_*", "pedestal"), ("mount_dowel_*", "pedestal"), ("mount_dowel_*", "housing"),
+             ("bearing_clamp", "output_bearing"), ("bearing_clamp", "housing"), ("bearing_clamp", "front_flange"),
+             ("encoder_ring", "encoder_hub"), ("ring_screw_*", "encoder_ring"), ("head_screw_*", "readhead"),
+             ("bell_screw_*", "end_bell"), ("cap_screw_*", "rear_cap")]:
     design.contact(a, b, kind="seated")
 design.contact("carrier_disk", "carrier", kind="seated")
 design.contact("pin_*", "carrier_disk", kind="seated")
@@ -158,6 +196,9 @@ for k in range(1, 4):
     design.contact(f"needle_p{k}", f"pin_{k}", kind="seated")
 design.contact("screw_*", "housing", kind="threaded")
 design.contact("mount_screw_*", "housing", kind="threaded")
+for a, b in [("standoff_*", "end_bell"), ("ring_screw_*", "encoder_hub"), ("head_screw_*", "standoff_*"),
+             ("bell_screw_*", "housing"), ("cap_screw_*", "end_bell")]:
+    design.contact(a, b, kind="threaded")
 design.fit_check("fit", motion=False)
 
 # Declared screw joints: checked at every build on the geometry as built (inspect_model checks=["fasteners"]).
@@ -173,6 +214,17 @@ for k in range(3):
     a = math.radians(120 * k + 60)
     design.fasten(f"disk_screw_{k + 1}", "ISO 10642 M4x16", axis=((orbit * math.cos(a), orbit * math.sin(a), 65.5), (0, 0, -1)),
                   clamps=["carrier_disk"], into="carrier", thread="tapped", instance=f"disk_screw_{k + 1}")
+for k, (x, y) in enumerate(BELL_SCREWS):
+    design.fasten(f"bell_screw_{k + 1}", "ISO 4762 M4x16", axis=((x, y, -43.5), (0, 0, 1)),
+                  clamps=["end_bell"], into="housing", thread="tapped", instance=f"bell_screw_{k + 1}")
+for k, (x, y) in enumerate(CAP_SCREWS):
+    design.fasten(f"cap_screw_{k + 1}", "ISO 7380 M3x25", axis=((x, y, -65), (0, 0, 1)),
+                  clamps=["rear_cap"], into="end_bell", thread="tapped", instance=f"cap_screw_{k + 1}")
+for k, (x, y) in enumerate(READHEAD_HOLES):
+    design.fasten(f"head_screw_{k + 1}", "ISO 4762 M2x6", axis=((x, y, -56.98), (0, 0, 1)),
+                  clamps=["readhead"], into=f"standoff_{k + 1}", thread="tapped", fit="close", instance=f"head_screw_{k + 1}")
+# The 8 ISO 7046 M2 x 6 ring screws are not declared: STEVE's fastener check has no countersunk screw below M3. As
+# modelled they engage 4.0 mm (2 d) of the hub flange's tapped through holes.
 design.fastener_rules(min_engagement_d=2.0)   # conservative for steel screws in aluminium / 303
 
 result = design.result()

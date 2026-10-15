@@ -13,6 +13,19 @@ joint modules shown standing on its own.
 |---|---|
 | ![Assembled](images/assembled-isometric.png) | ![Internals](images/internals-isometric.png) |
 
+## Build pack: ordering a real one
+
+[`build-pack/`](build-pack/) has what it takes to have this actuator made:
+- drawings for the 15 made parts (AM-01 … AM-15) with STEP files and process sheets;
+- a sourced BOM with the drive (Kollmorgen AKD-P00306) and encoder (RLS AksIM-2);
+- a control pendant PCB that is Ready to order at JLCPCB, and its printed case;
+- assembly and first-power-up procedures;
+- one zip per vendor.
+
+The [Actuator Order Desk](https://claude.ai/artifact/GE1qHx8ANFBGFs6aFWnunC) page walks through the five orders.
+The design changes this needed (STEVE revision 48) are listed in the
+[build pack README](build-pack/README.md#what-changed-to-make-it-buildable-revision-36--48).
+
 ## Reading the image
 
 | In the image | Interpreted as | Modelled |
@@ -20,7 +33,7 @@ joint modules shown standing on its own.
 | Finned middle section | Motor housing with cooling fins | Kollmorgen KBM-17 frameless stator (10-pole) and rotor on a hollow shaft |
 | Fine-toothed ring around the front disk | Fixed **ring gear** of a planetary stage | Sun 18 T, 3 planets 27 T, ring 72 T, module 1: **5:1 reduction** |
 | Silver disk + small hub with a bore | Planet carrier = output, with a hollow cable pass-through | Two-piece carrier: rear part with 3 bridge posts + bolted front disk and hub, 3 pressed-in planet pins, 8 mm bore end to end |
-| Knurled rear cap | Encoder cover | Code disk on the shaft + read head on the end bell |
+| Knurled rear cap | Encoder cover | RLS AksIM-2 ring on a hub on the shaft + its readhead on standoffs on the end bell |
 | Bolted front flange | Retains the ring gear | 4 × M5×30 socket head screws into tapped holes in the housing (14.5 mm of thread) |
 | Top lever + silver band | Quick-release cam clamp | Modelled first as a band and lever; **removed**: it did no useful work. The housing now bolts to the pedestal. |
 | Base with 4 holes, side port | Mounting pedestal with cable exit | Saddle block the housing bolts into + base plate with four Ø9 holes |
@@ -30,7 +43,7 @@ joint modules shown standing on its own.
 - Envelope about 130 × 162 × 137 mm (flange Ø120 mm, motor can Ø96–120 mm)
 - Gear ratio 1 + 72/18 = **5:1**; planets evenly spaced ((18 + 72) is divisible by 3) and phased to mesh
 - Bearings: a CRBH 3510 crossed-roller bearing (35 × 60 × 10) carries the output and the arm's tilting
-  moment; 6001-2RS (12 × 28 × 8) at the rear; HK1210 needle bearing pilots the shaft's front end inside the
+  moment; 6001-2RS (12 × 28 × 8) at the rear; HK1210 needle bearing (12 × 16 × 10) pilots the shaft's front end inside the
   carrier; each planet runs on an HK0609 needle bearing (6 × 10 × 9)
 - Through-bore: 8 mm from the rear cap to the output hub
 
@@ -44,13 +57,14 @@ dimensions.
 |---|---|---|---|
 | 1 | Motor housing | 6061-T6 aluminium, anodised | made |
 | 1 | Rear end bell | 6061-T6 aluminium, anodised | made |
-| 1 | Encoder cap (knurled) | 6061-T6 aluminium, anodised | made |
-| 1 | Encoder disk | 304 stainless | made |
-| 1 | Encoder read head | PC | bought (placeholder shape) |
+| 1 | Encoder cap (fluted), 3 × ISO 7380 M3 × 25 to the end bell | 6061-T6 aluminium, anodised | made |
+| 1 | Encoder ring **RLS MRA039BC020DSE00** on a 303 encoder hub (made), 8 × ISO 7046 M2 × 6 | — | bought (modelled at datasheet size) |
+| 1 | Encoder readhead **RLS MB039DCC18BENT00** (AksIM-2, BiSS-C) on 4 made 303 standoffs, 4 × ISO 4762 M2 × 6 | — | bought (modelled at datasheet size) |
+| 4 | End bell to housing, ISO 4762 M4 × 16 | A2-70 stainless | **catalogue STEP** (step.parts `iso4762_socket_head_cap_screw_m4x16`) |
 | 1 | Rear bearing **6001-2RS** (12 × 28 × 8) | bearing steel (C60 stand-in) | **catalogue STEP**: [step.parts `bearing_6001_2rs_sealed_simple`](https://www.step.parts/parts/bearing_6001_2rs_sealed_simple) |
 | 1 | Stator **Kollmorgen KBM-17H01-B00** | (envelope model) | bought with the rotor as a kit |
 | 1 | Rotor **Kollmorgen KBM-17H01-B00** (bonded to the hub sleeve) | (envelope model) | bought with the stator as a kit |
-| 1 | Motor shaft + rotor hub sleeve | steel | made |
+| 1 | Motor shaft (42CrMo4, induction-hardened needle journal) + rotor hub sleeve (C45) | steel | made |
 | 1 | Sun gear, m1 18T | 18CrNiMo7-6 (17CrNiMo6) case-hardening steel, carburised | made |
 | 3 | Planet gear, m1 27T | 18CrNiMo7-6 (17CrNiMo6) case-hardening steel, carburised | made |
 | 1 | Ring gear, m1 72T internal | 34CrNiMo6, quenched and tempered (nitriding optional) | made |
@@ -60,7 +74,7 @@ dimensions.
 | 3 | Planet pin, dowel **ISO 2338 6 m6 × 18** | hardened steel | bought, modelled at catalogue size* |
 | 3 | Planet needle bearing **HK0609** (6 × 10 × 9), drawn cup | bearing steel | bought, modelled at catalogue size* |
 | 1 | Pilot needle bearing **HK1210** (12 × 16 × 10) | bearing steel | bought, modelled at catalogue size* |
-| 1 | Output bearing **CRBH 3510** crossed roller (35 × 60 × 10) | bearing steel | bought, modelled at catalogue size* |
+| 1 | Output bearing **CRBH 3510** crossed roller (35 × 60 × 10), held by a made 303 clamp ring under the flange and a DIN 471 35 ring on the carrier | bearing steel | bought, modelled at catalogue size* |
 | 1 | Front flange | 6061-T6 aluminium, anodised | made |
 | 4 | Socket head cap screw **ISO 4762 M5 × 30** (flange) | A2-70 stainless | **catalogue STEP**: [step.parts `iso4762_socket_head_cap_screw_m5x30`](https://www.step.parts/parts/iso4762_socket_head_cap_screw_m5x30) |
 | 1 | Pedestal (saddle bored Ø120 / Ø96 to the housing, 4 counterbores from below, 2 dowel holes) | 6061-T6 aluminium, anodised | made |
@@ -101,6 +115,7 @@ source/                      CadQuery source for the STEVE CAD design
   parts/carrier_disk.py      planet carrier front disk and output hub, likewise (`from links import carrier_disk`)
   parts/pedestal.py          pedestal, likewise
   parts/chuck_backplate.py   optional lathe chuck backplate (303), a separate STEVE part
+build-pack/cnc/               one sheet per machined part (material, finish, process, fits, threads, inspection) + STEP per part
 analysis/
   README.md                  stress / strain results (FEA and hand calculations) and what they mean
   hand_calcs.py              gear, pin, bolt and bearing checks; plain Python 3
@@ -125,10 +140,12 @@ There are no DXF files because nothing in this design is sheet metal or laser-cu
 - `teardown` animation: takes the unit apart in the service order, checked for collisions on every build:
   1. The flange screws come out, then the flange comes off with the ring gear pressed into it, and the ring is
      pressed out forward.
-  2. The encoder cap, encoder disk and end bell with its bearing come off the back.
-  3. The carrier and planets come out the front, taking the sun with them. The sun is caught between the
-     carrier's rear plate and front disk, so it slides off the shaft's key.
-  4. The output bearing comes out the front, then the rotor and the stator come out the back.
+  2. The encoder cap (3 screws), the encoder readhead, the encoder hub with its ring, and the end bell (4 screws)
+     with its bearing come off the back.
+  3. The carrier comes out the front with the planets, the bearing clamp ring and the crossed-roller bearing
+     (retained on its sleeve), taking the sun with it. The sun is caught between the carrier's rear plate and
+     front disk, so it slides off the shaft's double-D flats.
+  4. The rotor and the stator come out the back.
   5. The four pedestal screws come out from below and the unit lifts off the pedestal.
 - `exploded` pose: every part pulled apart along the axis.
 - `showreel` animation (STEVE branch `showreel` only): 20 s on a display turntable for showing people. The
@@ -139,7 +156,7 @@ There are no DXF files because nothing in this design is sheet metal or laser-cu
   rides on the rotor. The `teardown` on main now follows the same order. To make the video, open the
   branch in STEVE, then use Motion tab → `showreel` → export (STEVE's MCP can't export video yet; a feature
   request is filed).
-- A fit check (interference between all 378 part pairs, with declared seats, gear meshes and screw threads)
+- A fit check (interference between all 2,016 part pairs, with declared seats, gear meshes and screw threads)
   passes on this revision.
 
 Frame: the motor axis is +Z with the output at +Z, and the pedestal points toward −Y.
@@ -291,11 +308,12 @@ block end; it was 0.25 mm) and the side cable port moved 2 mm toward the fins.
   needle bearings, a crossed-roller output bearing, a Kollmorgen KBM-17 motor (see
   [Motor](#motor-kollmorgen-kbm-17h01-b00)) and a bolted pedestal mount with a heat path in place of the clamp
   (see [Pedestal mount](#pedestal-mount)) and conservative screw threads (see [Screw threads](#screw-threads)).
-  Still open: a fillet at the carrier's sleeve-to-plate corner, and the KBM stator bore and end turns from
-  Kollmorgen's 3D model (behind a free account login).
-- The STEVE assembly (design revision 36) builds and passes its fit check (741 part pairs, nothing new or
-  worse) with all these changes. `exports/` and the two renders above are from that revision: the assembly STEP,
-  one STEP per component, and one STL per part type in its assembled position (design frame, mm).
-- The gears in the assembly source still have sharp tooth roots. The separate STEVE gear parts used for the
-  stress studies add the standard 0.38 mm root fillet.
+  Still open: the KBM stator bore and end turns from Kollmorgen's 3D model (behind a free account login). The
+  carrier's sleeve-to-plate corner now has a fillet (CNC review, design revision 48).
+- The STEVE assembly (design revision 48, after the CNC review and the RLS encoder) builds and passes its fit check
+  (2,016 part pairs, nothing new or worse than revision 36) and the teardown collision check. `exports/` is from
+  that revision: the assembly STEP, one STEP per component, and one STL per part type in its assembled position
+  (design frame, mm). The two renders above are still from revision 36.
+- The gears in the assembly now have the standard 0.38 mm root fillet, like the separate STEVE gear parts used for
+  the stress studies. They are made by a gear shop to the data tables in `build-pack/cnc/`.
 - Provided under the repository's [MIT license](../LICENSE), without warranty of any kind.

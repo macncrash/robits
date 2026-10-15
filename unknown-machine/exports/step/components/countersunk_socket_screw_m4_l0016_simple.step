@@ -1,7 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Open CASCADE Model'),'2;1');
-FILE_NAME('Open CASCADE Shape Model','2026-10-14T05:59:38',('Author'),(
+FILE_NAME('Open CASCADE Shape Model','2026-10-15T00:46:17',('Author'),(
     'Open CASCADE'),'Open CASCADE STEP processor 8.0','Open CASCADE 8.0'
   ,'Unknown');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
@@ -15,8 +15,8 @@ DATA;
 #4 = PRODUCT_DEFINITION_SHAPE('','',#5);
 #5 = PRODUCT_DEFINITION('design','',#6,#9);
 #6 = PRODUCT_DEFINITION_FORMATION('','',#7);
-#7 = PRODUCT('Open CASCADE STEP translator 8.0 23',
-  'Open CASCADE STEP translator 8.0 23','',(#8));
+#7 = PRODUCT('Open CASCADE STEP translator 8.0 25',
+  'Open CASCADE STEP translator 8.0 25','',(#8));
 #8 = PRODUCT_CONTEXT('',#2,'mechanical');
 #9 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #10 = SHAPE_REPRESENTATION('',(#11,#15),#19);
@@ -910,7 +910,7 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #770 = ITEM_DEFINED_TRANSFORMATION('','',#11,#15);
 #771 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',#772
   );
-#772 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('66',
+#772 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('96',
   'ISO 10642 countersunk socket screw, M4 x 16 mm','',#5,#27,$);
 #773 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#29));
 ENDSEC;

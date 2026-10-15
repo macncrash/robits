@@ -38,3 +38,19 @@ def ball_bearing(ri, ro, w, z):
     balls = [cq.Solid.makeSphere(br, cq.Vector(pr * math.cos(2 * math.pi * k / n), pr * math.sin(2 * math.pi * k / n), z + w / 2),
                                  cq.Vector(0, 0, 1), -90, 90, 360) for k in range(n)]
     return outer, inner, cq.Compound.makeCompound(balls)
+
+
+def edge_break(r, z, size, out, up):
+    """45 deg chamfer for the circular edge of radius r at height z on the Z axis, as a ring to cut away.
+
+    out: +1 when the material lies outside r (a bore edge), -1 when inside r (an outside diameter).
+    up: +1 when the material lies above z (an edge on a bottom face), -1 when below z (a top face)."""
+    e = 0.5   # margin into the empty side, so the cut never leaves a sliver
+    pts = [(r + out * size, z), (r + out * size, z - up * e), (r - out * e, z - up * e), (r - out * e, z + up * size),
+           (r, z + up * size)]
+    return cq.Workplane("XZ").polyline(pts).close().revolve(360, (0, 0, 0), (0, 1, 0)).val()
+
+
+def drill_point(r, at, direction):
+    """118 deg drill point at the bottom of a blind hole of radius r: a cone from `at` along `direction`."""
+    return cq.Solid.makeCone(r, 0, r / math.tan(math.radians(59)), cq.Vector(*at), cq.Vector(*direction))

@@ -1,0 +1,283 @@
+<title>Actuator Order Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a work-order sheet. Header strip with the unit's numbers, a five-station order run, then the parts register. */
+:root{
+  --paper:#eef0ec; --sheet:#f8f9f6; --ink:#17202a; --ink-2:#4a5560; --rule:#c9cec7; --rule-2:#dde1da;
+  --accent:#d9550f; --accent-ink:#ffffff; --steel:#2d4a62;
+  --ok:#2f7a3e; --ok-bg:#e1efe3; --warn:#9a6200; --warn-bg:#f6ead2; --quote:#2d4a62; --quote-bg:#e0e8ef; --gap:#8f2f2f; --gap-bg:#f3e1df;
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#12171c; --sheet:#1a2027; --ink:#e7ebee; --ink-2:#a3adb6; --rule:#33404b; --rule-2:#26303a;
+  --accent:#f0712c; --accent-ink:#14100c; --steel:#8fb2cf;
+  --ok:#7cc98b; --ok-bg:#1d3324; --warn:#e3b45c; --warn-bg:#3a2e17; --quote:#9cc0dd; --quote-bg:#1d2d3b; --gap:#e79a92; --gap-bg:#3b2221;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#12171c; --sheet:#1a2027; --ink:#e7ebee; --ink-2:#a3adb6; --rule:#33404b; --rule-2:#26303a;
+  --accent:#f0712c; --accent-ink:#14100c; --steel:#8fb2cf;
+  --ok:#7cc98b; --ok-bg:#1d3324; --warn:#e3b45c; --warn-bg:#3a2e17; --quote:#9cc0dd; --quote-bg:#1d2d3b; --gap:#e79a92; --gap-bg:#3b2221;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:15px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+a{color:var(--steel)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.label{font:500 11px/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+
+/* Title block, like a drawing's */
+.title{display:grid;grid-template-columns:1fr auto;gap:0;border:1.5px solid var(--ink);background:var(--sheet)}
+.title .main{padding:20px 22px;display:grid;gap:10px;min-width:0}
+.title h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.01em}
+.title p{margin:0;max-width:66ch;color:var(--ink-2)}
+.title .cells{display:grid;grid-template-columns:repeat(2,minmax(130px,auto));border-left:1.5px solid var(--ink)}
+.cell{padding:10px 14px;border-bottom:1px solid var(--rule);border-left:1px solid var(--rule);display:grid;gap:3px;align-content:start}
+.cell:nth-child(odd){border-left:0}
+.cell b{font:600 17px/1.2 var(--f-mono);font-variant-numeric:tabular-nums}
+@media (max-width:760px){.title{grid-template-columns:1fr}.title .cells{border-left:0;border-top:1.5px solid var(--ink)}}
+
+/* The run */
+.runhead{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;justify-content:space-between}
+.runhead h2{font-size:26px}
+.runhead p{margin:4px 0 0;color:var(--ink-2);max-width:70ch}
+.progress{display:flex;gap:6px;align-items:center}
+.progress i{width:28px;height:6px;background:var(--rule);display:block}
+.progress i.on{background:var(--accent)}
+.btn{font:600 14px/1 var(--f-display);letter-spacing:.02em;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);padding:11px 16px;cursor:pointer;text-decoration:none;display:inline-flex;gap:8px;align-items:center;min-height:42px}
+.btn:hover{background:var(--rule-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.stations{display:grid;gap:0;border:1.5px solid var(--ink);background:var(--sheet)}
+.station{display:grid;grid-template-columns:64px 1fr;border-top:1px solid var(--rule)}
+.station:first-child{border-top:0}
+.station .num{font:700 30px/1 var(--f-display);color:var(--ink-2);padding:18px 0 0 18px;border-right:1px solid var(--rule)}
+.station.current .num{color:var(--accent)}
+.station.done .num{color:var(--ok)}
+.station .body{padding:16px 20px 18px;display:grid;gap:12px;min-width:0}
+.station .top{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.station h3{font-size:21px}
+.station .what{margin:0;color:var(--ink-2);max-width:72ch}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 11.5px/1 var(--f-mono);padding:5px 8px;letter-spacing:.03em;border:1px solid currentColor;white-space:nowrap}
+.chip.ok{color:var(--ok);background:var(--ok-bg)} .chip.warn{color:var(--warn);background:var(--warn-bg)}
+.chip.quote{color:var(--quote);background:var(--quote-bg)} .chip.gap{color:var(--gap);background:var(--gap-bg)}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 18px}
+.facts div{display:grid;gap:2px}
+.facts b{font:500 14px/1.3 var(--f-mono);font-variant-numeric:tabular-nums}
+details.rfq{border:1px solid var(--rule);background:var(--paper)}
+details.rfq summary{cursor:pointer;padding:9px 12px;font:600 13px/1.2 var(--f-display);letter-spacing:.02em;display:flex;justify-content:space-between;gap:10px;align-items:center}
+details.rfq pre{margin:0;padding:12px 14px;border-top:1px solid var(--rule);font:12.5px/1.5 var(--f-mono);white-space:pre-wrap;overflow-x:auto;max-height:340px;overflow-y:auto;color:var(--ink)}
+.copy{font:500 12px/1 var(--f-mono);border:1px solid var(--ink-2);background:transparent;color:var(--ink);padding:6px 9px;cursor:pointer}
+.donebox{display:flex;gap:8px;align-items:center;font:500 13px/1.2 var(--f-body);color:var(--ink-2)}
+.donebox input{width:18px;height:18px;accent-color:var(--accent)}
+.note{border-left:3px solid var(--warn);background:var(--warn-bg);padding:10px 14px;margin:0;max-width:80ch}
+@media (max-width:560px){.station{grid-template-columns:1fr}.station .num{border-right:0;padding:14px 0 0 18px;font-size:22px}}
+
+/* Before you order */
+.twocol{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.panel{border:1.5px solid var(--ink);background:var(--sheet);padding:18px 20px;display:grid;gap:10px;align-content:start;min-width:0}
+.panel h2{font-size:21px}
+.panel ol,.panel ul{margin:0;padding-left:20px;display:grid;gap:7px}
+.panel li{max-width:70ch}
+
+/* Register */
+.reg{border:1.5px solid var(--ink);background:var(--sheet)}
+.reghead{display:flex;flex-wrap:wrap;gap:10px 16px;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1.5px solid var(--ink)}
+.reghead h2{font-size:21px}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filters button{font:500 12px/1 var(--f-mono);padding:7px 10px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer}
+.filters button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.tablebox{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+th{font:500 11px/1.2 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);background:var(--paper);position:sticky;top:0}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+td .pn{font:12.5px/1.3 var(--f-mono)}
+tr:hover td{background:var(--paper)}
+.foot{color:var(--ink-2);font-size:13px;max-width:90ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="title">
+    <div class="main">
+      <span class="label">Build pack · Unknown machine planetary joint actuator</span>
+      <h1>Actuator Order Desk</h1>
+      <p>Everything needed to have one actuator made, in five orders: machined parts, gears, the control pendant's
+        board, its printed case, and the bought parts. Each station gives you the packet to send, where to send it
+        and the request text. You place each order yourself. Nothing has been ordered.</p>
+    </div>
+    <div class="cells">
+      <div class="cell"><span class="label">CAD</span><b>STEVE rev 48</b></div>
+      <div class="cell"><span class="label">Drawings</span><b>AM-01…15</b></div>
+      <div class="cell"><span class="label">Bought lines</span><b id="nbuy">—</b></div>
+      <div class="cell"><span class="label">Ratio · torque</span><b>5:1 · 18 N·m</b></div>
+      <div class="cell"><span class="label">Est. 1 unit</span><b>$8.0–16.7k</b></div>
+      <div class="cell"><span class="label">Est. each of 5</span><b>$5.6–10.8k</b></div>
+    </div>
+  </header>
+
+  <section aria-labelledby="run-h" style="display:grid;gap:14px">
+    <div class="runhead">
+      <div>
+        <h2 id="run-h">The order run</h2>
+        <p>Open each station in turn. <b>Download packet</b> saves the zip for that vendor; <b>Open vendor</b> takes
+          you to their quote or upload page. Tick a station when its order or request is sent; ticks stay in this
+          browser only.</p>
+      </div>
+      <div style="display:grid;gap:8px;justify-items:end">
+        <div class="progress" id="progress" aria-label="Stations done"></div>
+        <a class="btn primary" id="startbtn" href="#station-1">Start the order run</a>
+      </div>
+    </div>
+    <p class="note" id="pushnote">The download buttons fetch the packets from the project's GitHub repository (macncrash/robits,
+      <span class="mono">unknown-machine/build-pack/orders/</span>). They work once the build pack is pushed to main.</p>
+    <div class="stations" id="stations"></div>
+  </section>
+
+  <section class="twocol">
+    <div class="panel">
+      <h2>Settle before ordering</h2>
+      <ol>
+        <li><b>Motor code and inductance.</b> Confirm KBM-17H01-B00 with Kollmorgen (the nearest code seen listed was
+          KBMS-17H01-C00) and its line-to-line inductance: the AKD needs at least 2.5 mH at 240 V.</li>
+        <li><b>Motor PTC with BiSS-C.</b> Ask Kollmorgen whether the AKD reads the PTC on X10/8–9 with FB1.SELECT 34.
+          If not, add a DIN-rail PTC relay (not yet chosen).</li>
+        <li><b>Planet pins.</b> The needles run on the pins. Standard hardened dowels are m6, which eats some of the
+          HK0609's clearance; INA asks for h6. Confirm with Schaeffler or buy h6 pins and tighten the carrier holes.</li>
+        <li><b>Drive generation.</b> Ask a Kollmorgen distributor whether NBAN, NCAN or NDAN is current for the AKD-P00306.</li>
+        <li><b>Pendant fabrication files.</b> Export fabrication.zip from the STEVE circuit (revision 32) yourself: STEVE's API can't download it.</li>
+      </ol>
+    </div>
+    <div class="panel">
+      <h2>When the parts arrive</h2>
+      <ul>
+        <li>Check each machined part against its drawing's inspection note; ask for the CMM and gear reports.</li>
+        <li>Build it with <span class="mono">ASSEMBLY.md</span>: sub-assemblies, the gear stage, the housing, the rear bearing and encoder, the pedestal.</li>
+        <li>Power it up with <span class="mono">TEST.md</span>: insulation and winding checks, drive limits (5.9 A peak, 3.0 A continuous), first spin, E-stop, run-in, backlash.</li>
+        <li>Bring up the pendant per <span class="mono">pcb/README.md</span> before connecting it to the drive.</li>
+      </ul>
+      <div class="actions"><a class="btn" href="https://github.com/macncrash/robits/tree/main/unknown-machine/build-pack" target="_blank" rel="noopener">Browse the build pack</a></div>
+    </div>
+  </section>
+
+  <section class="reg" aria-labelledby="reg-h">
+    <div class="reghead">
+      <h2 id="reg-h">Bought parts register</h2>
+      <div class="filters" id="filters" role="group" aria-label="Filter by status"></div>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th class="n">Line</th><th class="n">Qty</th><th>Item</th><th>Part number</th><th>Supplier</th><th class="n">Unit price</th><th>Status</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="foot">Prices were seen on supplier pages or search copies of them on 2026-10-14 and are per unit in the
+    supplier's currency; machined parts, gears, the motor and the drive are estimates or allowances until quoted.
+    Full detail is in <span class="mono">hardware/bom.csv</span> and <span class="mono">hardware/cost-estimate.md</span>.</p>
+</div>
+
+<script>
+const RAW = "https://github.com/macncrash/robits/raw/main/unknown-machine/build-pack/orders/";
+const TREE = "https://github.com/macncrash/robits/tree/main/unknown-machine/build-pack/";
+const BOM = __BOM__;
+const RFQ = __RFQ__;
+const STATIONS = [
+  {id:"cnc-shop", title:"Machined parts", who:"CNC job shop",
+   what:"12 parts (15 drawings with the gears split out): housing, end bell, cap, flange, pedestal, carrier halves, clamp ring, shaft, hub sleeve, encoder hub, standoffs. STEP + ISO drawings + process sheets.",
+   chips:[["quote","Needs quotes"],["ok","Drawings released, rev A"]],
+   facts:[["Est. 1 set","$1,860–4,380"],["Est. 5 sets","$5,160–11,450"],["Materials","6061-T6 · 303 · 42CrMo4 · C45"]],
+   vendors:[["Xometry","https://www.xometry.com/"],["JLCCNC","https://jlccnc.com/"],["PCBWay CNC","https://www.pcbway.com/"]]},
+  {id:"gear-shop", title:"Gears", who:"Gear shop, made to print",
+   what:"Sun 18 T, four planets 27 T (one spare) and the 72 T internal ring, module 1, 12 mm face. Case-hardened and ground to ISO 1328 grade 6; ring grade 7. No catalogue sells this set.",
+   chips:[["quote","Needs quotes"],["ok","Gear data on drawings"]],
+   facts:[["Est. 1 set","$1,550–4,700"],["Est. 5 sets","$2,900–7,900"],["Sun / planets","18CrNiMo7-6, 58–62 HRC"]],
+   vendors:[["KHK USA made-to-print","https://khkgears.us/rfq-custom-gears"],["Gear Motions","https://www.gearmotions.com/"],["Ondrives","https://www.ondrives.com/"]]},
+  {id:"jlcpcb-pendant", title:"Pendant board", who:"JLCPCB, PCB + assembly",
+   what:"The machine control pendant: 80 × 110 mm, 4 layers, 116 parts, STM32F072, ±10 V command, 24 V enable, E-stop to STO, rpm readout. STEVE verdict: Ready to order. Order 5.",
+   chips:[["ok","Ready to order"],["warn","Export fabrication.zip from STEVE first"]],
+   facts:[["Est. 5 assembled","$220–260"],["Per board","about $45–50"],["Extended parts","32 (loading fees)"]],
+   vendors:[["Open the circuit in STEVE","https://stevecad.studio/?document=94f4bee3-1629-4a47-808e-e7974db7754d"],["JLCPCB quote","https://cart.jlcpcb.com/quote"]]},
+  {id:"print-pendant", title:"Pendant case", who:"Your printer or a print service",
+   what:"Two PETG parts, tub and lid, already in print orientation, with M3 heat-set inserts and a cable gland. Fit check clear in STEVE.",
+   chips:[["ok","Ready to print"]],
+   facts:[["Parts","2 · PETG"],["Size","92 × 165 × 38.5 mm"],["Est.","under $40 at a service"]],
+   vendors:[["JLC3DP","https://jlc3dp.com/"],["Craftcloud","https://craftcloud3d.com/"]]},
+  {id:"hardware", title:"Bought parts", who:"Several suppliers",
+   what:"Motor kit and drive (quote from Kollmorgen or a distributor), RLS encoder kit, bearings, pins, screws, retaining rings, adhesives, cables and connectors. One cart list per supplier in the packet.",
+   chips:[["ok","Encoder, bearings, dowels: confirmed"],["quote","Motor and drive: quote"],["warn","Some lines to confirm"]],
+   facts:[["Motor + drive","$3,270–5,520"],["Encoder kit","about $530"],["Small parts, glue, cable","$800–1,570"]],
+   vendors:[["RLS shop","https://www.rls.si/eng/aksim-2-off-axis-rotary-absolute-encoder"],["Kollmorgen","https://www.kollmorgen.com/"],["Acorn Industrial","https://acorn-ind.co.uk/"],["Fusion Fixings","https://www.fusionfixings.co.uk/"]]},
+];
+const STATUS = {confirmed:["ok","confirmed"], "to-confirm":["warn","to confirm"], quote:["quote","quote"]};
+const store = {get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let done = store.get("orderdesk-done") || {};
+
+function el(tag, attrs={}, ...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==="class")e.className=v;else if(k==="text")e.textContent=v;else e.setAttribute(k,v)}for(const c of kids)if(c)e.append(c);return e}
+
+function renderStations(){
+  const box=document.getElementById("stations"); box.textContent="";
+  const firstOpen = STATIONS.findIndex(s=>!done[s.id]);
+  STATIONS.forEach((s,i)=>{
+    const st=el("article",{class:"station"+(done[s.id]?" done":"")+(i===firstOpen?" current":""),id:"station-"+(i+1)});
+    st.append(el("div",{class:"num",text:String(i+1)}));
+    const b=el("div",{class:"body"});
+    const top=el("div",{class:"top"}, el("div",{}, el("span",{class:"label",text:s.who}), el("h3",{text:s.title})));
+    const chips=el("div",{class:"chips"}); s.chips.forEach(([c,t])=>chips.append(el("span",{class:"chip "+c,text:t}))); top.append(chips);
+    b.append(top, el("p",{class:"what",text:s.what}));
+    const facts=el("div",{class:"facts"}); s.facts.forEach(([k,v])=>facts.append(el("div",{},el("span",{class:"label",text:k}),el("b",{text:v})))); b.append(facts);
+    const act=el("div",{class:"actions"});
+    act.append(el("a",{class:"btn primary",href:RAW+s.id+".zip",target:"_blank",rel:"noopener",text:"Download packet"}));
+    s.vendors.forEach(([n,u])=>act.append(el("a",{class:"btn",href:u,target:"_blank",rel:"noopener",text:"Open "+n+" ↗"})));
+    b.append(act);
+    const d=el("details",{class:"rfq"}); const sm=el("summary",{}, el("span",{text:"Request text (RFQ.md in the packet)"}));
+    const cp=el("button",{class:"copy",type:"button",text:"Copy"});
+    cp.addEventListener("click",ev=>{ev.preventDefault();ev.stopPropagation();const t=RFQ[s.id];
+      navigator.clipboard.writeText(t).then(()=>{cp.textContent="Copied"},()=>{d.open=true;const r=document.createRange();r.selectNodeContents(pre);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);cp.textContent="Selected: press Ctrl/⌘ C"});
+      setTimeout(()=>cp.textContent="Copy",2500)});
+    sm.append(cp); const pre=el("pre",{text:RFQ[s.id]}); d.append(sm,pre); b.append(d);
+    const cb=el("input",{type:"checkbox",id:"done-"+s.id}); cb.checked=!!done[s.id];
+    cb.addEventListener("change",()=>{done[s.id]=cb.checked;store.set("orderdesk-done",done);renderStations()});
+    b.append(el("label",{class:"donebox",for:"done-"+s.id},cb,document.createTextNode("Order or request sent")));
+    st.append(b); box.append(st);
+  });
+  const pr=document.getElementById("progress"); pr.textContent="";
+  STATIONS.forEach(s=>pr.append(el("i",{class:done[s.id]?"on":""})));
+  pr.append(el("span",{class:"label",text:` ${STATIONS.filter(s=>done[s.id]).length} / ${STATIONS.length} sent`}));
+  const start=document.getElementById("startbtn");
+  if(firstOpen<0){start.textContent="All five sent";start.setAttribute("href","#reg-h")}
+  else{start.textContent=firstOpen===0?"Start the order run":"Next: "+STATIONS[firstOpen].title;start.setAttribute("href","#station-"+(firstOpen+1))}
+}
+
+let filter="all";
+function renderRows(){
+  const tb=document.getElementById("rows"); tb.textContent="";
+  BOM.filter(r=>filter==="all"||r.status===filter).forEach(r=>{
+    const [c,t]=STATUS[r.status]||["warn",r.status];
+    const item=el("td",{}); if(r.url){item.append(el("a",{href:r.url,target:"_blank",rel:"noopener",text:r.item}))}else item.textContent=r.item;
+    tb.append(el("tr",{}, el("td",{class:"n",text:r.line}), el("td",{class:"n",text:r.qty}), item,
+      el("td",{},el("span",{class:"pn",text:r.maker_pn||"—"})), el("td",{text:r.supplier||"not yet sourced"}),
+      el("td",{class:"n",text:r.unit_price?`${Number(r.unit_price).toFixed(2)} ${r.currency}`:"—"}),
+      el("td",{},el("span",{class:"chip "+c,text:t}))));
+  });
+}
+function renderFilters(){
+  const f=document.getElementById("filters"); f.textContent="";
+  const counts={all:BOM.length}; BOM.forEach(r=>counts[r.status]=(counts[r.status]||0)+1);
+  [["all","All"],["confirmed","Confirmed"],["to-confirm","To confirm"],["quote","Quote"]].forEach(([k,t])=>{
+    const b=el("button",{type:"button","aria-pressed":String(filter===k),text:`${t} ${counts[k]||0}`});
+    b.addEventListener("click",()=>{filter=k;renderFilters();renderRows()}); f.append(b)});
+}
+document.getElementById("nbuy").textContent=BOM.filter(r=>r.make_or_buy!=="make").length;
+renderStations(); renderFilters(); renderRows();
+</script>

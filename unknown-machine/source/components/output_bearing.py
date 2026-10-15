@@ -4,7 +4,8 @@ import cadquery as cq
 from steve import Component
 from shapes import ring, turned
 
-z0, width = 34, 10            # seat z 34..44
+z0, width = 32.5, 10          # seat z 32.5..42.5: outer ring clamped by the bearing clamp ring, inner ring by the
+                              # carrier shoulder and a DIN 471 35 ring
 pitch_r, roller_d, n = 23.75, 3.5, 28
 
 rollers = []

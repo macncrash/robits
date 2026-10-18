@@ -1,7 +1,7 @@
 # Planet gear (m1, 27 T), 3 off (+1 spare)
 
 STEP: [`step/planet.step`](step/planet.step) (modelled at its own origin, axis Z, z 0..12). Source:
-`source/components/planet.py` and `source/gearing.py`, design revision 48.
+`source/components/planet.py` and `source/gearing.py`, design revision 49.
 
 **Who makes it:** a gear shop (hob, carburise, grind teeth, grind the bore), as for the sun.
 
@@ -19,7 +19,7 @@ STEP: [`step/planet.step`](step/planet.step) (modelled at its own origin, axis Z
 | Module / teeth / α | 1 / 27 / 20°, spur, x = 0, ISO 53 profile A (ρf 0.38) |
 | Pitch / tip / root | 27.000 / **29.00 h11** / 24.50 |
 | Face width | 12.00 −0.05/−0.10 |
-| Span over 4 teeth | W4 = 10.711 nominal; make **10.711 −0.025/−0.045** |
+| Span over 4 teeth | W4 = 10.711 nominal; make **10.711 −0.035/−0.055** (0.05–0.10 mm working backlash) |
 | Over 2 pins Ø1.75 | Md = 29.435 nominal (odd tooth count: measure over pins in opposite gaps) |
 | Quality | ISO 1328-1 grade 6, ground |
 | Mates with | Sun z 18 (a = 22.5) and ring z 72 (internal) |

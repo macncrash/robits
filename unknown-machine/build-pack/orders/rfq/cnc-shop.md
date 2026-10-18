@@ -29,6 +29,10 @@ Please quote the 12 machined parts below at **1 set** and **5 sets**, with lead 
 | AM-12 | Readhead standoff | 4 | 303 stainless | Passivate |
 
 Notes for the quote:
+- **Drawing revisions:** AM-01, AM-04 and AM-08 are rev B (tighter Ø90 fits: H6 bores and a js5 clamp ring).
+  `specs/FIT-CHECK.md` lists the tolerances that matter most and how the housing is best held. The key one is
+  the Ø60 seat and Ø90 counterbore coaxial to the stator bore within 0.015, cut from opposite ends.
+- **AM-08 clamp ring:** make it 2.70 high; it is faced to height at assembly. Quote it as made, not faced.
 - **AM-09 shaft:**
   - the bore is 15 × D: drill it from both ends or gun-drill it;
   - the double-D flats are 10.8 +0.02 across;

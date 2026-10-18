@@ -1,6 +1,6 @@
 # Encoder cap (fluted rear cap)
 
-STEP: [`step/rear_cap.step`](step/rear_cap.step). Source: `source/components/rear_cap.py`, design revision 48.
+STEP: [`step/rear_cap.step`](step/rear_cap.step). Source: `source/components/rear_cap.py`, design revision 49.
 
 | | |
 |---|---|

@@ -1,6 +1,6 @@
 # Rear end bell
 
-STEP: [`step/end_bell.step`](step/end_bell.step). Source: `source/components/end_bell.py`, design revision 48.
+STEP: [`step/end_bell.step`](step/end_bell.step). Source: `source/components/end_bell.py`, design revision 49.
 
 | | |
 |---|---|

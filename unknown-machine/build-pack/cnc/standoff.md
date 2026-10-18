@@ -1,7 +1,7 @@
 # Readhead standoff (new part), 4 off
 
 STEP: [`step/standoff.step`](step/standoff.step) (at its own origin: stud along +Z, body along −Z). Source:
-`source/components/standoff.py`, design revision 48.
+`source/components/standoff.py`, design revision 49.
 
 Holds the RLS AksIM-2 readhead MB039DCC18BENT00 on the end bell's rear face, at R24.5 on the readhead's four holes
 (0°, 60°, 120°, 180°).

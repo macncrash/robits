@@ -21,14 +21,15 @@ front = ring(front_r, stator_bore, 15, 14)           # front section, z 14..29 (
 front = front.fuse(ring(front_r, 40.5, 2, 29))       # depth-stop ledge z 29..31: the stator sleeve banks against it
 bulkhead = ring(front_r, 24, 13, 31).cut(cyl(30, 10, 32.5))   # z 31..44, CRBH 3510 crossed-roller seat (60 mm) z 32.5..42.5
 body = shell.fuse(fins).fuse(front).fuse(bulkhead)
-body = body.cut(cyl(45, 2, 42.4))                    # Ø90 H7 counterbore 1.6 deep: the bearing clamp ring sits in it and centres the
-                                                     # front flange (and ring gear); 0.1 below the bearing so the clamp bears on the bearing
+body = body.cut(cyl(45, 2, 42.25))                   # Ø90 H6 counterbore 1.75 deep: the bearing clamp ring sits in it and centres the
+                                                     # front flange (and ring gear); 0.25 below the bearing face so the clamp bears on the
+                                                     # bearing even when its width is at the ISO 492 minimum (10 -0.12)
 for k in range(6):                                   # adhesive grooves for the bonded stator (Kollmorgen: 0.13-0.26 deep over
     body = body.cut(ring(stator_bore + 0.2, 42.4, 5, -26 + 9 * k))   # half the bore): 6 x 5 wide, 0.2 deep, z -26..24
 body = body.cut(ring(30.3, 29.6, 1.1, 32.2))         # corner relief 0.3 x 0.3 under the CRBH outer ring (seat floor z 32.5)
 body = body.cut(ring(42.85, 42.25, 0.6, 28.7))       # corner relief 0.3 x 0.3 where the stator banks on the ledge (z 29)
 for r, z, size, out, up in ((stator_bore, -36, 0.5, 1, 1),   # lead-in: stator / end-bell spigot entry
-                            (30, 42.4, 0.5, 1, -1),          # lead-in: CRBH seat entry
+                            (30, 42.25, 0.5, 1, -1),         # lead-in: CRBH seat entry
                             (front_r, 44, 0.5, -1, -1),      # front face OD
                             (front_r, 14, 0.5, -1, 1),       # Ø120 / Ø96 step (clears the saddle's corner)
                             (51.5, -36, 0.5, -1, 1)):        # rear face OD

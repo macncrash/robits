@@ -23,7 +23,7 @@ joint modules shown standing on its own.
 - one zip per vendor.
 
 The [Actuator Order Desk](https://claude.ai/artifact/GE1qHx8ANFBGFs6aFWnunC) page walks through the five orders.
-The design changes this needed (STEVE revision 48) are listed in the
+The design changes this needed (STEVE revision 49) are listed in the
 [build pack README](build-pack/README.md#what-changed-to-make-it-buildable-revision-36--48).
 
 ## Reading the image
@@ -310,7 +310,7 @@ block end; it was 0.25 mm) and the side cable port moved 2 mm toward the fins.
   (see [Pedestal mount](#pedestal-mount)) and conservative screw threads (see [Screw threads](#screw-threads)).
   Still open: the KBM stator bore and end turns from Kollmorgen's 3D model (behind a free account login). The
   carrier's sleeve-to-plate corner now has a fillet (CNC review, design revision 48).
-- The STEVE assembly (design revision 48, after the CNC review and the RLS encoder) builds and passes its fit check
+- The STEVE assembly (design revision 49, after the CNC review, the RLS encoder and the tolerance-stack review) builds and passes its fit check
   (2,016 part pairs, nothing new or worse than revision 36) and the teardown collision check. `exports/` is from
   that revision: the assembly STEP, one STEP per component, and one STL per part type in its assembled position
   (design frame, mm). The two renders above are still from revision 36.

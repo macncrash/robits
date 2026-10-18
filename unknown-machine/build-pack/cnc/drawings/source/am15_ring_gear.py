@@ -53,7 +53,7 @@ rows = [["GEAR DATA", ""],
         ["Basic rack", "ISO 53 profile A (root radius 0.38)"],
         ["Reference (pitch) diameter d", "72.000"], ["Tip diameter da (inside)", "70.00 H11 (+0.19/0)"],
         ["Root diameter df", "74.50 (generated)"], ["Face width b", "12.00 -0.05/-0.10"],
-        ["Between 2 pins Ø1.68 Mi", "69.703 nom.; make 69.733 / 69.763 (+0.03/+0.06)"],
+        ["Between 2 pins Ø1.68 Mi", "69.703 nom.; make 69.743 / 69.773 (+0.04/+0.07)"],
         ["", "(even z: opposite gaps; space widening for backlash)"],
         ["Accuracy", "ISO 1328-1:2013 grade 7 (shaped)"],
         ["Runout of teeth (pitch circle) to A", "0.015"],
@@ -73,5 +73,6 @@ sh.notes(22, 86, general_notes(STEP, threads=False, extra=gear_notes([
     "Inspection: gear report per ISO 1328, Mi, hardness. Supply material certificate.",
 ])), width=200, h=1.8, gap=0.95)
 sh.title_block(fields(PART, "Ring gear m1 72 T internal", "1", "34CrNiMo6 +QT (1.6582)",
-                      "QT 28-34 HRC; gas nitriding optional", "2:1", STEP))
+                      "QT 28-34 HRC; gas nitriding optional", "2:1", STEP,
+                      rev_b="Space widening for 0.05-0.10 backlash (was 0.03-0.08)"))
 finish(sh, PART)

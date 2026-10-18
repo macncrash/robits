@@ -33,13 +33,13 @@ X0, Z0 = 133 - k * 27, 140 - k * 43.75
 A = PView(sh, vA, (X0, Z0), k, loops=loops, beyond=False, label="SECTION A-A (5:1), one side",
           label_pos=(178, 186), ref=(178, 140))
 P = lambda x, z: (x, 0, z)  # noqa: E731
-sh.dim(A, P(45, 42.5), P(45, 45), "v", pos=58, tol="+0.03/+0.01", dec=2, part=PART, nominal=2.5,
+sh.dim(A, P(45, 42.5), P(45, 45), "v", pos=58, tol="faced, see notes", dec=2, part=PART, nominal=2.5,
        label="overall height")
 sh.dim(A, P(27, 42.5), P(27, 43.5), "v", pos=-52, dec=1, part=PART, nominal=1.0, outside=True, tshift=-8,
        label="lip")
 sh.dim(A, P(27, 45), P(34, 45), "h", pos=24, part=PART, nominal=7, label="lip radial (Ø54 to Ø68)")
 sh.dim(A, P(34, 45), P(45, 45), "h", pos=24, part=PART, nominal=11, label="rim radial (Ø68 to Ø90)")
-sh.leader(F.P((39.0, -22.5, 45)), (128, 104), "Ø90 g6 (-0.012/-0.034)", h=1.9)
+sh.leader(F.P((39.0, -22.5, 45)), (128, 104), "Ø90 js5 (±0.0075)", h=1.9)
 sh.leader(F.P((24.04, -24.04, 45)), (128, 95), ["Ø68 +0.1/0 (rim bore,", "clears the carrier plate Ø66)"], h=1.9)
 sh.datum(A.P(P(40, 42.5)), (0, -1), "A", L=5)
 ff = sh.fcf(200, 116, "parallelism", "0.01", ["A"])
@@ -55,9 +55,11 @@ sh.leader(A.P(P(34.15, 44.85)), (192, 160), "0.3×45°", h=1.9)
 
 sh.notes(22, 86, general_notes(STEP, extra=[
     "Material AISI 303 (1.4305) (the model shows 304). Passivate ASTM A967.",
-    "Height sets the crush on the CRBH 3510 outer ring: 0.01-0.04 mm with the flange (AM-04) screwed down. "
-    "Check at assembly; lap the top face if there is no gap.",
+    "Height: make 2.70 +0.05/0, then face the top at assembly to H = R + d - B + 0.02 (±0.01): R measured AM-04 "
+    "recess depth (1.00), d measured AM-01 seat depth (11.50), B measured CRBH 3510 width (10.00, ISO 492 0/-0.12). "
+    "Nominal parts give 2.52 (the model shows 2.50). Gives 0.01-0.03 mm crush on the bearing's outer ring.",
 ], threads=False), width=84, h=1.7, gap=0.9, title="NOTES")
 sh.title_block(fields(PART, "Output-bearing clamp ring", "1", "AISI 303 (1.4305)", "Passivate ASTM A967",
-                      "1:1 (section 5:1)", STEP))
+                      "1:1 (section 5:1)", STEP,
+                      rev_b="OD js5 (was g6); height faced to measured parts"))
 finish(sh, PART)

@@ -1,7 +1,7 @@
 # Sun gear (m1, 18 T)
 
 STEP: [`step/sun.step`](step/sun.step) (teeth are the reference shape, with the 0.38 m root fillet). Source:
-`source/components/sun.py` and `source/gearing.py`, design revision 48.
+`source/components/sun.py` and `source/gearing.py`, design revision 49.
 
 **Who makes it:** a gear shop. The CNC shop's part is the blank (turn OD, faces and a pilot bore, then send for
 hobbing); the gear shop hobs, carburises, grinds the teeth, and wire-EDMs the double-D bore after hardening. Most
@@ -23,7 +23,7 @@ gear shops prefer to do the whole part from their own certified bar. See also `.
 | Basic rack | ISO 53 profile A: ha* 1.0, hf* 1.25, root radius ρf* 0.38 |
 | Pitch / tip / root diameter | 18.000 / **20.00 h11** / 15.50 |
 | Face width | **12.00 −0.05/−0.10** |
-| Span over 3 teeth (no backlash) | W3 = 7.632; manufacture to **W3 = 7.632 −0.025/−0.045** (tooth-thinning for 0.03–0.08 mm working backlash at a = 22.5) |
+| Span over 3 teeth (no backlash) | W3 = 7.632; manufacture to **W3 = 7.632 −0.035/−0.055** (tooth-thinning for 0.05–0.10 mm working backlash at a = 22.5; widened in rev 49 so an off-centre ring gear can't take it all) |
 | Over 2 pins Ø1.75 (alternative) | Md = 20.458 nominal (same allowance × about 1.5) |
 | Quality | ISO 1328-1:2013 grade 6, teeth ground after heat treatment |
 | Mates with | 3 planets z 27 at centre distance 22.500 |

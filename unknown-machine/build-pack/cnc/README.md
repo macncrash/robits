@@ -4,7 +4,7 @@ Everything a job shop needs to quote and make the actuator's machined parts: one
 finish, process and setups, stock, every critical feature with its tolerance and the reason, threads, inspection)
 and a STEP file per part in [`step/`](step/).
 
-- **Source:** STEVE design `02e31a10-ac9e-489a-8c91-1a4ce6a43b71` **revision 48** (mirrored in `../../source/`), with
+- **Source:** STEVE design `02e31a10-ac9e-489a-8c91-1a4ce6a43b71` **revision 49** (mirrored in `../../source/`), with
   the linked parts carrier rev 8, carrier disk rev 5 and pedestal rev 8.
 - **STEP files** are in the design frame (mm; motor axis +Z, output at +Z, pedestal toward −Y) and sit where the
   part goes in the assembly, except `planet.step` and `standoff.step`, which are at their own origin.
@@ -51,6 +51,30 @@ sizes and prices: `../hardware/stock.md`. Gear sourcing: `../hardware/gears.md`.
 | INA HK0609 drawn cup, 6 × 10 × 9 (× 3) | Ø10 N6 (planet, ground after carburising) | 6 m6 hardened dowel pin as raceway | INA: N6; note the m6 pin on clearance |
 | Stator (Kollmorgen KBM-17H01) | Ø85.100 +0.035/0 (housing), 6 adhesive grooves 0.2 deep | — | Kollmorgen mounting guide, bonded |
 | Ring gear in the flange | Ø86 H7 (flange) | Ø86 s6 (ring) + Loctite 638 | 0.036–0.093 interference |
+
+## Tolerance-stack review (revision 49, drawings rev B)
+
+A stack-up of the whole assembly before cutting metal found two problems:
+
+- **The ring gear could sit off the carrier axis by more than the gear backlash.**
+  - *Cause:* the flange and ring are centred through the clamp ring, on two Ø90 g6/H7 fits. Those two fits
+    alone allowed 0.069 mm radial; the whole stack was 0.055 typical and 0.12 worst case. One planet's backlash
+    shrinks by about 0.73 × the offset, against 0.03–0.08 mm of backlash.
+  - *Changes:*
+    - the fits are now Ø90 H6 / js5 (housing AM-01, flange AM-04, clamp ring AM-08), leaving 0.035 typical and
+      0.08 worst;
+    - the gears are thinned for 0.05–0.10 mm backlash (AM-13 to AM-15);
+    - `../ASSEMBLY.md` centres the ring on the planets before the flange screws are torqued.
+- **The bearing's width tolerance wasn't in the clamp-ring stack.**
+  - *Cause:* the 0.01–0.04 mm crush assumed the CRBH 3510 is exactly 10.00 wide. ISO 492 normal class allows
+    0/−0.12.
+  - *Changes:*
+    - the clamp ring is made 2.70 and faced at assembly to the measured parts (AM-08);
+    - the housing's Ø90 counterbore is 1.75 deep (was 1.60), so its floor stays clear of a thin bearing. This is
+      the one geometry change (STEVE revision 49).
+
+[`../FIT-CHECK.md`](../FIT-CHECK.md) lists the tolerances that matter most, what to buy before finishing the
+bores, and how to fit-check with plastic gears.
 
 ## What the DFM review changed (STEVE revision 36 → 48)
 

@@ -49,7 +49,7 @@ P = lambda r, z: tuple(c45 * r + (0, 0, z))  # noqa: E731   point at radius r (s
 A.centreline(P(0, 41), P(0, 68))
 for r in (50, -50):
     A.centreline(P(r, 42), P(r, 67), ext=1)
-d90 = sh.dim(A, P(-45, 44), P(45, 44), "v", pos=-22, prefix="Ø", tol="H7 (+0.035/0)", part=PART, nominal=90,
+d90 = sh.dim(A, P(-45, 44), P(45, 44), "v", pos=-22, prefix="Ø", tol="H6 (+0.022/0)", part=PART, nominal=90,
              tshift=-22)
 sh.datum(d90[0], (0, -1), "C", L=3)
 sh.dim(A, P(-39, 44), P(39, 44), "v", pos=-30, prefix="Ø", part=PART, nominal=78, tshift=24)
@@ -84,9 +84,10 @@ sh.notes(262, 283, general_notes(STEP, extra=[
     "Material EN AW-6061-T6, with certificate.",
     "Black anodise MIL-A-8625 Type II. MASK: Ø86 ring-gear bore, Ø90 recess, rear face.",
     "Datum C: Ø90 recess axis. Turn Ø86 and Ø90 in one setup if possible, or hold the part on C for op 20.",
-    "Ring gear (AM-15) is pressed in from the front with Loctite 638, against the lip (D). Clamp-ring crush: with "
-    "the flange screwed down the recess floor presses the clamp ring (AM-08) 0.01-0.04 mm onto the bearing.",
+    "Ring gear (AM-15) is pressed in from the front with Loctite 638, against the lip (D). Record the measured Ø90 "
+    "recess depth: the clamp ring (AM-08) is faced to it for 0.01-0.03 mm crush on the bearing.",
 ]), width=148, h=1.9, gap=1.05)
 sh.title_block(fields(PART, "Front flange", "1", "EN AW-6061-T6", "Black anodise Type II, fits masked",
-                      "1:1 (views as noted)", STEP))
+                      "1:1 (views as noted)", STEP,
+                      rev_b="Ø90 recess H6 (was H7); record recess depth"))
 finish(sh, PART)

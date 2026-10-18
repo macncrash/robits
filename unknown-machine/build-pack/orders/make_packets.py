@@ -46,6 +46,7 @@ for step in sorted((PACK / "cnc/step").glob("*.step")):
 for md in sorted((PACK / "cnc").glob("*.md")):
     if md.stem not in GEARS:
         files.append((f"specs/{md.name}", md))
+files.append(("specs/FIT-CHECK.md", PACK / "FIT-CHECK.md"))   # the tolerances that matter most, machining cautions
 packet("cnc-shop", files, rfq("cnc-shop"))
 
 # 2. Gear shop: sun, planets, ring.

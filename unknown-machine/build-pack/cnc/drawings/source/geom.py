@@ -1,7 +1,7 @@
 """Geometry side of the AM drawing set: STEP loading, exact hidden-line projection, section cuts, feature queries.
 
 Runs on pythonocc-core (FreeCAD 1.1 bundles it: /Applications/FreeCAD.app/Contents/Resources/bin/python).
-Every dimension on the sheets is measured from these STEP solids (STEVE design 02e31a10 revision 48 export),
+Every dimension on the sheets is measured from these STEP solids (STEVE design 02e31a10 revision 49 export),
 never typed in: `cyl()` / `plane_z()` find the face and fail loudly if the model doesn't have it.
 """
 import math

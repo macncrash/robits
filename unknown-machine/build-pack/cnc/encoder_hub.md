@@ -1,6 +1,6 @@
 # Encoder hub (new part)
 
-STEP: [`step/encoder_hub.step`](step/encoder_hub.step). Source: `source/components/encoder_hub.py`, design revision 48.
+STEP: [`step/encoder_hub.step`](step/encoder_hub.step). Source: `source/components/encoder_hub.py`, design revision 49.
 
 Carries the RLS AksIM-2 ring MRA039BC020DSE00 on the rear end of the motor shaft (see
 `../hardware/decisions.md`).

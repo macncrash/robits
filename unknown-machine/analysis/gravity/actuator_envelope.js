@@ -71,7 +71,22 @@ export function create(ctx) {
   for (let r = 200; r <= 1200; r += 200) for (let t = 5; t <= 30; t += 5) put(X(r), Y(t), Z(0), 0.45);
   while (a < n) { put(X(0), Y(0), Z(0), 0.7); }
 
-  let t = 0;
+  let t = 0, cur = ctx.params;
+  // The envelope's landmarks from the knobs alone (sweep_sim can read them with steps: 0).
+  const landmarks = (p) => {
+    const N = p.ratio, eta = p.eta, vav = 0.95 * p.bus / Math.SQRT2;
+    const s = p.ilim > ICONT ? SAT * (p.ilim - ICONT) / (IPK - ICONT) : 0;
+    const peakNm = N * eta * KT * p.ilim * (1 - s);
+    const cornerRad = Math.max(0, (vav - p.ilim * Math.sqrt(3) * RPH) / KE) / N;
+    const rpm = 60 / (2 * Math.PI);
+    return {
+      peakTorqueNm: peakNm,
+      contTorqueNm: N * eta * KT * ICONT,
+      cornerRpm: cornerRad * rpm,
+      noLoadRpm: vav / KE / N * rpm,
+      peakPowerW: peakNm * cornerRad,
+    };
+  };
   const draw = (p, dt) => {
     const N = p.ratio, eta = p.eta, J = JM + p.jload / (N * N);
     const vav = 0.95 * p.bus / Math.SQRT2;
@@ -96,11 +111,12 @@ export function create(ctx) {
   return {
     step(dt, p) {
       t += dt;
+      cur = p;
       if (t > p.cycle) { t = 0; w.fill(0); }
       draw(p, dt);
     },
     observe() {
-      return { t_s: t };
+      return { t_s: t, ...landmarks(cur) };
     },
   };
 }

@@ -1,7 +1,7 @@
 # Motor shaft and rotor hub sleeve (two parts, one STEP)
 
 STEP: [`step/rotor.step`](step/rotor.step) holds both bodies: the hollow shaft (z −60..60) and the hub sleeve
-(z −17..15.15). Source: `source/components/rotor.py`, design revision 48.
+(z −17..15.15). Source: `source/components/rotor.py`, design revision 49.
 
 ## 1. Hollow shaft
 

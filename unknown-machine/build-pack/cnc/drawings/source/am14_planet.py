@@ -50,9 +50,9 @@ rows = [["GEAR DATA", ""],
         ["Basic rack", "ISO 53 profile A (ha* 1.0, hf* 1.25, ρf* 0.38)"],
         ["Reference (pitch) diameter d", "27.000"], ["Tip diameter da", "29.00 h11 (0/-0.13)"],
         ["Root diameter df", "24.50 (generated)"], ["Face width b", "12.00 -0.05/-0.10"],
-        ["Span over k = 4 teeth W4", "10.711 nom.; make 10.686 / 10.666 (-0.025/-0.045)"],
+        ["Span over k = 4 teeth W4", "10.711 nom.; make 10.676 / 10.656 (-0.035/-0.055)"],
         ["Over 2 pins Ø1.75 Md (alt.)", "29.435 nom. (odd z: pins in opposite gaps)"],
-        ["Working backlash", "0.03-0.08 with the sun at a = 22.500"],
+        ["Working backlash", "0.05-0.10 with the sun at a = 22.500"],
         ["Accuracy", "ISO 1328-1:2013 grade 6, teeth ground after HT"],
         ["Runout of teeth (pitch circle) to A", "0.01"],
         ["Mating gears", "sun AM-13 (z 18, a = 22.5), ring AM-15 (z 72 int.)"],
@@ -70,5 +70,6 @@ sh.notes(270, 283, general_notes(STEP, threads=False, extra=gear_notes([
     "material certificate.",
 ])), width=140, h=1.8, gap=0.95)
 sh.title_block(fields(PART, "Planet gear m1 27 T", "3 (+1 spare)", "18CrNiMo7-6 (1.6587)",
-                      "Carburised 58-62 HRC, Eht 0.3-0.5, ground", "5:1", STEP))
+                      "Carburised 58-62 HRC, Eht 0.3-0.5, ground", "5:1", STEP,
+                      rev_b="Tooth thinning for 0.05-0.10 backlash (was 0.03-0.08)"))
 finish(sh, PART)

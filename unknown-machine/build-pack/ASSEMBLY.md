@@ -1,12 +1,13 @@
 # Assembly: from a box of parts to a running actuator
 
-This is the reverse of the `teardown` animation in the STEVE design (02e31a10, revision 48), whose order is
+This is the reverse of the `teardown` animation in the STEVE design (02e31a10, revision 49), whose order is
 collision-checked on every build. Part numbers are the drawings in [`cnc/drawings/`](cnc/drawings/); bought
 parts are lines in [`hardware/bom.csv`](hardware/bom.csv).
 
 **Before you start**
 - Check every made part against its drawing's inspection notes. In particular, check the bearing seats, the
   stator bore and the gear reports.
+- Do a plastic fit check first if the gears aren't in yet: [FIT-CHECK.md](FIT-CHECK.md).
 - Clean everything with isopropyl alcohol. Bonded and Loctite joints must be oil-free.
 - Tools:
   - an arbor press with flat, ground press tools for each bearing ring;
@@ -64,12 +65,24 @@ parts are lines in [`hardware/bom.csv`](hardware/bom.csv).
    it hard against the stator.
 2. From the front, fit the carrier with its crossed-roller bearing into the housing's Ø60 H7 seat. The sun slides
    onto the shaft's double-D (10.8 across the flats) and the shaft's needle journal enters the HK1210.
-3. Lay the bearing clamp ring (AM-08) on the bearing's outer ring.
-4. Fit the flange and ring gear over the planets. Turn the output slowly by hand until the ring teeth engage,
-   then push the flange home on its Ø90 spigot.
-5. Fit 4 × M5 × 30 at 4.0 N·m, in a cross pattern.
-6. Check the clamp-ring crush: the flange should seat with 0.01–0.04 mm on the ring (AM-08 note). With the
-   screws snug, a 0.05 feeler must not enter between the flange and the housing.
+3. **Face the clamp ring to the parts you have** (AM-08 note 6). Measure, at 20 °C:
+   - B, the crossed-roller bearing's width (it can be up to 0.12 under 10.00);
+   - d, the housing's seat depth below its front face (11.50 −0.02);
+   - R, the flange's Ø90 recess depth (1.00 ±0.01).
+
+   Face the clamp ring's top to H = R + d − B + 0.02 (±0.01). With nominal parts that is 2.52. Keep the faces
+   parallel within 0.01.
+4. Lay the clamp ring on the bearing's outer ring.
+5. Fit the flange and ring gear over the planets. Turn the output slowly by hand until the ring teeth engage,
+   then push the flange home on the clamp ring.
+6. **Centre the ring gear on the planets.** Fit the 4 × M5 × 30 finger-tight, then snug them to about 0.5 N·m
+   while turning the output by hand through two full turns. The planets push the ring to the middle of the
+   fits' clearance. Then torque to 4.0 N·m in a cross pattern, a quarter turn of the output between screws.
+7. Check: the output turns through 5 full turns with no tight spot, and the backlash at the output feels the
+   same at four points 90° apart. A tight spot once per output turn means the ring is off-centre: loosen and
+   repeat step 6.
+8. Check the clamp-ring crush: with the screws snug, the flange should stand 0.01–0.03 mm off the housing before
+   the final torque. A 0.05 feeler must not enter between the flange and the housing after it.
 
 ## 4. Rear bearing, end bell and encoder
 

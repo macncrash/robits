@@ -1,7 +1,7 @@
 # Ring gear (m1, 72 T internal)
 
 STEP: [`step/ring_gear.step`](step/ring_gear.step) (assembled position, z 48..60). Source:
-`source/components/ring_gear.py` and `source/gearing.py`, design revision 48.
+`source/components/ring_gear.py` and `source/gearing.py`, design revision 49.
 
 **Who makes it:** a gear shop: turn the ring blank, shape the teeth (Fellows / gear shaper) or, for one or two
 prototypes, wire-EDM them. No catalogue m1 72 T internal gear exists (see `../hardware/gears.md`).
@@ -20,7 +20,7 @@ prototypes, wire-EDM them. No catalogue m1 72 T internal gear exists (see `../ha
 | Module / teeth / α | 1 / 72 internal / 20°, spur, x = 0, ISO 53 profile A (root radius 0.38) |
 | Pitch / tip (inside) / root | 72.000 / **70.00 H11** / 74.50 |
 | Face width | 12.00 −0.05/−0.10 |
-| Between 2 pins Ø1.68 | Mi = 69.703 nominal (even teeth: opposite gaps); make **69.703 +0.03/+0.06** (space widening for backlash) |
+| Between 2 pins Ø1.68 | Mi = 69.703 nominal (even teeth: opposite gaps); make **69.703 +0.04/+0.07** (space widening for 0.05–0.10 mm working backlash) |
 | Quality | ISO 1328-1 grade 7 (shaped) |
 | Mates with | 3 planets z 27 |
 | Tooth ends | 0.2 × 45° tip chamfer |

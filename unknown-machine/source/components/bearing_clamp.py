@@ -1,6 +1,6 @@
 """Clamp ring for the CRBH 3510 outer ring (made, 303).
 
-Sits in the housing's Ø90 H7 counterbore and in the front flange's Ø90 H7 recess, so it also centres the flange
+Sits in the housing's Ø90 H6 counterbore and in the front flange's Ø90 H6 recess (js5 OD), so it also centres the flange
 (and the ring gear) on the bearing axis. Its inner lip (r 27..34, 1.0 thick) bears on the outer ring's front face;
 the flange screws clamp it. It is captive between the carrier plate and the bearing, so it goes in and out with
 the carrier. CNC notes: build-pack/cnc/bearing_clamp.md.

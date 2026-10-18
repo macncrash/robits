@@ -1,7 +1,7 @@
 # Motor housing
 
 STEP: [`step/housing.step`](step/housing.step) (assembled position, mm; motor axis +Z, output at +Z, pedestal at −Y).
-Source: `source/components/housing.py`, STEVE design revision 48.
+Source: `source/components/housing.py`, STEVE design revision 49.
 
 | | |
 |---|---|
@@ -20,7 +20,7 @@ Source: `source/components/housing.py`, STEVE design revision 48.
 | Adhesive grooves in the stator bore | 6 grooves, 5.0 wide, **0.20 ±0.05 deep** (Ø85.50 ±0.10), pitch 9, from z −26 to 24 | Kollmorgen asks for 0.13–0.26 mm grooves over at least half the bond length: 30 of 57.8 mm. Internal grooving tool from the rear |
 | Depth-stop ledge Ø81, face at z 29 | Ø81.0 ±0.1; face perpendicular to A within 0.03 | Locates the stator axially, 2 mm off the bulkhead (Kollmorgen's minimum end-turn clearance). 0.3 × 0.3 relief in the corner so the stator banks square |
 | Crossed-roller seat (CRBH 3510 outer ring), z 32.5..42.5 | **Ø60 H7 (+0.030/0)**, floor at 11.50 −0.02/0 below the front face; runout of Ø60 and of its floor to A ≤ 0.015; Ra 0.8 | IKO's recommended housing fit for CRBH with a rotating inner ring and normal load is H7 (check against the bearing actually bought). The coaxiality with A sets the motor air gap and the gear centre. 0.3 × 0.3 corner relief at the floor; 0.5 × 45° lead-in |
-| Clamp-ring counterbore, front face | **Ø90 H7 (+0.035/0)**, 1.60 ±0.02 deep (floor 0.10 below the bearing's front face); coaxial with Ø60 within 0.015 | Holds the bearing clamp ring, which also centres the front flange and the ring gear. Turn in the same setup as Ø60 |
+| Clamp-ring counterbore, front face | **Ø90 H6 (+0.022/0)**, 1.75 ±0.02 deep (floor 0.25 below the nominal bearing face, so a bearing at its minimum width still stands proud of it); coaxial with Ø60 within 0.015 | Holds the bearing clamp ring, which also centres the front flange and the ring gear. Turn in the same setup as Ø60 |
 | Front face (flange seat), z 44 | Flatness 0.02; perpendicular to A within 0.02 | Flange and ring gear squareness to the output axis |
 | Front section Ø120 and fin tips Ø96 (saddle diameters) | **Ø120 g6 (−0.012/−0.034)**, **Ø96 g6 (−0.012/−0.034)** | Sit in the pedestal saddle bored +0.00/+0.03: 0.012–0.064 mm diametral clearance, filled with thermal paste. (A 0.23–0.25 mm pad needs about 0.5 mm more clearance: decide pad or paste before machining the pedestal) |
 | Rear spigot bore entry | 0.5 × 45° lead-in | End bell spigot and stator go in from the rear |

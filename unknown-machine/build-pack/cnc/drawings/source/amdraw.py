@@ -314,8 +314,9 @@ class Sheet:
             self.line([(xx, ry), (xx, ry + 10)], w=0.25)
         for xx, s in ((x0 + 1.5, "REV"), (x0 + 13.5, "DESCRIPTION"), (x0 + 141.5, "DATE"), (x0 + 163.5, "BY")):
             self.text(xx, ry + 6.4, s, h=1.8, check=False)
-        for xx, s in ((x0 + 1.5, "A"), (x0 + 13.5, "First release for quotation and manufacture"),
-                      (x0 + 141.5, "2026-10-14"), (x0 + 163.5, "Claude")):
+        for xx, s in ((x0 + 1.5, f.get("revision", "A")),
+                      (x0 + 13.5, f.get("rev_desc", "First release for quotation and manufacture")),
+                      (x0 + 141.5, f.get("date", "2026-10-14")), (x0 + 163.5, "Claude")):
             self.text(xx, ry + 1.4, s, h=2.0, check=False)
         self.tb_top = ry + 10
         self.tb_x0 = x0

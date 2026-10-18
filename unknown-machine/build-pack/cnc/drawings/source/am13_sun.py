@@ -60,9 +60,9 @@ rows = [["GEAR DATA", ""],
         ["Basic rack", "ISO 53 profile A (ha* 1.0, hf* 1.25, ρf* 0.38)"],
         ["Reference (pitch) diameter d", "18.000"], ["Tip diameter da", "20.00 h11 (0/-0.13)"],
         ["Root diameter df", "15.50 (generated)"], ["Face width b", "12.00 -0.05/-0.10"],
-        ["Span over k = 3 teeth W3", "7.632 nom.; make 7.607 / 7.587 (-0.025/-0.045)"],
-        ["Over 2 pins Ø1.75 Md (alt.)", "20.458 nom.; allowance ≈1.5×: -0.038/-0.068 (ref.)"],
-        ["Working backlash", "0.03-0.08 at a = 22.500 (tooth thinning above)"],
+        ["Span over k = 3 teeth W3", "7.632 nom.; make 7.597 / 7.577 (-0.035/-0.055)"],
+        ["Over 2 pins Ø1.75 Md (alt.)", "20.458 nom.; allowance ≈1.5×: -0.053/-0.083 (ref.)"],
+        ["Working backlash", "0.05-0.10 at a = 22.500 (tooth thinning above)"],
         ["Accuracy", "ISO 1328-1:2013 grade 6, teeth ground after HT"],
         ["Runout of teeth (pitch circle) to A", "0.01"],
         ["Mating gears", "3 × planet AM-14 (z 27), a = 22.500"],
@@ -80,5 +80,6 @@ sh.notes(22, 92, general_notes(STEP, threads=False, extra=gear_notes([
     "coupon from the same batch. Supply material certificate.",
 ])), width=200, h=1.8, gap=0.95)
 sh.title_block(fields(PART, "Sun gear m1 18 T", "1", "18CrNiMo7-6 (1.6587)",
-                      "Carburised 58-62 HRC, Eht 0.3-0.5, ground", "5:1", STEP))
+                      "Carburised 58-62 HRC, Eht 0.3-0.5, ground", "5:1", STEP,
+                      rev_b="Tooth thinning for 0.05-0.10 backlash (was 0.03-0.08)"))
 finish(sh, PART)

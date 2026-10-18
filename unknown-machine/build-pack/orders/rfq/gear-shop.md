@@ -13,6 +13,7 @@ All gears:
 - module 1, 20° pressure angle, spur, no profile shift;
 - 12 mm face;
 - centre distance 22.500;
+- working backlash 0.05–0.10 mm (tooth thinning on each drawing);
 - full gear data, span and over-pin measurements are on each drawing and in `specs/gears.md`.
 
 Equivalent materials (AISI 9310 or 8620 for the sun and planets, 4340 for the ring) are acceptable with

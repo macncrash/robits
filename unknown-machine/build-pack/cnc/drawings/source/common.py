@@ -12,12 +12,18 @@ sys.path.insert(0, HERE)
 from amdraw import Sheet, PView, DISAGREEMENTS, fmt, check  # noqa: E402,F401
 from geom import load, View, project, section, Q  # noqa: E402,F401
 
-DESIGN = "STEVE 02e31a10 rev 48"
+DESIGN = "STEVE 02e31a10 rev 49"
 
 
-def fields(number, title, qty, material, finish, scale, step, part_doc=None):
-    return dict(number=number, title=title, qty=qty, material=material, finish=finish, scale=scale,
-                source=[part_doc or DESIGN, f"STEP: cnc/step/{step}"])
+REV_B = "2026-10-17"   # rev B: tolerance stack review (Ø90 H6/js5 clamp-ring fits, faced clamp ring, 0.05-0.10 backlash)
+
+
+def fields(number, title, qty, material, finish, scale, step, part_doc=None, rev_b=None):
+    f = dict(number=number, title=title, qty=qty, material=material, finish=finish, scale=scale,
+             source=[part_doc or DESIGN, f"STEP: cnc/step/{step}"])
+    if rev_b:   # the sheet's latest revision is shown in the block and the revision table
+        f.update(revision="B", date=REV_B, rev_desc=rev_b)
+    return f
 
 
 def general_notes(step, extra=(), ra="3.2", threads=True, edges="-0.3 (break 0.2-0.4 x 45°)"):

@@ -25,9 +25,9 @@ m4 = q.cyl(3.3, n=4, axis=(0, 0, 1))
 m5rad = q.cyl(4.2, axis=(0, 1, 0), n=4)
 dowel = q.cyl(4.0, axis=(0, 1, 0), n=2)
 z_rear, z_front = q.plane(-36), q.plane(44)
-z_ledge, z_floor, z_cb = q.plane(29), q.plane(32.5), q.plane(42.4)
+z_ledge, z_floor, z_cb = q.plane(29), q.plane(32.5), q.plane(42.25)
 check(PART, "seat floor below front face", z_front - z_floor, 11.5)
-check(PART, "Ø90 counterbore depth", z_front - z_cb, 1.6)
+check(PART, "Ø90 counterbore depth", z_front - z_cb, 1.75)
 check(PART, "stator bore Ø", bore["d"], 85.1)
 check(PART, "groove Ø", groove["d"], 85.5)
 
@@ -54,7 +54,7 @@ sh.fcf_leader(f, (bA[0][0], bA[0][1] - 12), from_side="right")
 sh.dim(A, R(-24, 33), R(24, 33), "v", pos=44 + 7, prefix="Ø", part=PART, nominal=48)
 bB = sh.dim(A, R(-30, 40), R(30, 40), "v", pos=44 + 15, prefix="Ø", tol="H7 (+0.030/0)", part=PART, nominal=60)
 sh.dim(A, R(-40.5, 30), R(40.5, 30), "v", pos=44 + 23, prefix="Ø", tol="±0.1", part=PART, nominal=81, tshift=22)
-bC = sh.dim(A, R(-45, 44), R(45, 44), "v", pos=44 + 31, prefix="Ø", tol="H7 (+0.035/0)", part=PART, nominal=90)
+bC = sh.dim(A, R(-45, 44), R(45, 44), "v", pos=44 + 31, prefix="Ø", tol="H6 (+0.022/0)", part=PART, nominal=90)
 bD = sh.dim(A, R(-60, 20), R(60, 20), "v", pos=44 + 39, prefix="Ø", tol="g6 (-0.012/-0.034)", part=PART,
             nominal=120)
 sh.datum(bB[0], (0, -1), "B", L=3)
@@ -160,7 +160,7 @@ F = detail(sh, A, (0, 37.5, 37), 8.5, 2, (207, 42), "F", label_dy=9)
 sh.text(207, 18, "corner reliefs 0.3 × 0.3", h=2.0, ha="center")
 sh.leader(F.P(R(30.15, 32.5)), (199, 21.5), "", h=2.0, side="left", shoulder=0.01)
 sh.leader(F.P(R(42.7, 29)), (196, 21.5), "", h=2.0, side="left", shoulder=0.01)
-sh.dim(F, R(45.2, 42.4), R(45.2, 44), "h", pos=20, tol="±0.02", dec=2, part=PART, nominal=1.6, outside=True,
+sh.dim(F, R(45.2, 42.25), R(45.2, 44), "h", pos=20, tol="±0.02", dec=2, part=PART, nominal=1.75, outside=True,
        tshift=-9, label="cbore depth")
 
 # ---- notes and title block
@@ -176,5 +176,6 @@ sh.notes(300, 200, general_notes(STEP, extra=[
 ]), width=110, h=1.9, gap=1.05)
 general_rough(sh, 340, 81, "3.2", ["Ra 1.6", "Ra 0.8"])
 sh.title_block(fields(PART, "Motor housing", "1", "EN AW-6061-T6", "Black anodise Type II, fits masked (chromate)",
-                      "1:1 (views as noted)", STEP))
+                      "1:1 (views as noted)", STEP,
+                      rev_b="Ø90 counterbore H6, 1.75 deep (was H7, 1.60)"))
 finish(sh, PART)

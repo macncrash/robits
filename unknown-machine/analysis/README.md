@@ -352,5 +352,11 @@ each spinning up from rest against its own load, and the swarm traces the envelo
 [gravity/make_showcase.py](gravity/make_showcase.py). The sim's knobs (bus voltage, current limit, gear
 ratio, arm inertia) work live in the Gravity app; paste the module into its editor.
 
+The sim's `observe()` also reports the envelope's landmarks for the current knobs: `peakTorqueNm`,
+`contTorqueNm`, `cornerRpm`, `noLoadRpm` and `peakPowerW`. At the defaults these are 18.3 N·m, 10.3 N·m,
+910 rpm, 1,060 rpm and 1.74 kW. Because they depend only on the knobs, Gravity's `sweep_sim` can chart them
+against any knob with `steps: 0`. For example, sweep `bus` and `ilim` and measure `peakTorqueNm`, `cornerRpm`
+and `noLoadRpm`.
+
 These are idealised estimates for a speculative concept, not a certification. Nothing here makes the design
 safe for real-world use. See the repository license (MIT, no warranty).

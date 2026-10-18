@@ -1,6 +1,6 @@
 # Front flange
 
-STEP: [`step/front_flange.step`](step/front_flange.step). Source: `source/components/front_flange.py`, design revision 48.
+STEP: [`step/front_flange.step`](step/front_flange.step). Source: `source/components/front_flange.py`, design revision 49.
 
 | | |
 |---|---|
@@ -15,7 +15,7 @@ STEP: [`step/front_flange.step`](step/front_flange.step). Source: `source/compon
 
 | Feature | Size and tolerance | Why |
 |---|---|---|
-| Ø90 recess in the rear face (datum **C**) | **Ø90 H7 (+0.035/0)**, depth **1.00 +0.01/−0.01** | Fits over the bearing clamp ring (Ø90 g6), which sits in the housing's Ø90 H7 counterbore: centres the flange and ring gear on the bearing axis, and the recess floor presses the clamp ring onto the bearing |
+| Ø90 recess in the rear face (datum **C**) | **Ø90 H6 (+0.022/0)**, depth **1.00 +0.01/−0.01** (record the measured depth: the clamp ring is faced to it) | Fits over the bearing clamp ring (Ø90 js5), which sits in the housing's Ø90 H6 counterbore: centres the flange and ring gear on the bearing axis, and the recess floor presses the clamp ring onto the bearing |
 | Ring-gear bore | **Ø86 H7 (+0.035/0)**, coaxial to C within 0.015, Ra 0.8; 0.5 × 45° lead-in at the front; 0.3 × 0.3 relief at the lip | Press fit of the ring gear (Ø86 s6). Turn the Ø86 bore and the Ø90 recess in one setup if possible, or hold the part on C for op 20 |
 | Lip face at z 48 (ring gear seat) | Perpendicular to C within 0.02 | Ring gear squareness |
 | Rear face (on the housing) | Flat 0.02, parallel to the lip face 0.02 | |
@@ -23,15 +23,15 @@ STEP: [`step/front_flange.step`](step/front_flange.step). Source: `source/compon
 
 ## Assembly note
 
-Press the ring gear in from the front with Loctite 638, against the lip. Clamp-ring crush: with the flange
-screwed down, the flange's recess floor should press the clamp ring 0.01–0.04 mm onto the bearing. Check with a
-feeler gauge under the flange before the screws are tightened fully (gap 0.01–0.04 at the flange face), and lap the
-clamp ring's top face if there is no gap.
+Press the ring gear in from the front with Loctite 638, against the lip. Clamp-ring crush: the clamp ring is faced
+at assembly to the measured parts (AM-08) so the flange's recess floor presses it 0.01–0.03 mm onto the bearing.
+Check with a feeler gauge under the flange before the screws are tightened fully (gap 0.01–0.03 at the flange face).
+Then centre the ring gear on the planets as `ASSEMBLY.md` step 3 describes.
 
 ## DFM review
 
 | Finding | Change |
 |---|---|
-| Located only by the 4 screws in Ø5.5 holes (±0.25 mm of float at the ring gear) | Ø90 H7 recess over the clamp ring centres it |
+| Located only by the 4 screws in Ø5.5 holes (±0.25 mm of float at the ring gear) | Ø90 H6 recess over the clamp ring centres it (H7/g6 tightened to H6/js5 after the tolerance stack, rev 49) |
 | Sharp corner where the ring gear seats | 0.3 × 0.3 relief |
 | No lead-in for the press fit, sharp OD edges | 0.5 × 45° chamfers |

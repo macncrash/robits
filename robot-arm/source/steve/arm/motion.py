@@ -6,7 +6,7 @@ def add_motion(design):
     design.revolute("j1", "base", "turret", axis=((0, 0, 0), (0, 0, 1)), limits=(-180, 180))
     design.revolute("j2", "turret", "upper_arm", axis=((0, 0, shoulder_z), (0, 1, 0)), limits=(-110, 110))
     design.revolute("j3", "upper_arm", "forearm", axis=((0, 0, elbow_z), (0, 1, 0)), limits=(-160, 30))  # beyond +30 the wrist folds into the shoulder
-    design.revolute("j4", "forearm", "wrist1", axis=((fore_len, 0, elbow_z), (0, 1, 0)), limits=(-180, 180))
+    design.revolute("j4", "forearm", "wrist1", axis=((fore_len, 0, elbow_z), (0, 1, 0)), limits=(-180, 60))  # beyond +60 the fingers can reach back into the upper arm (arm_pitch study)
     design.revolute("j5", "wrist1", "wrist2", axis=((0, w_y, elbow_z), (1, 0, 0)), limits=(-180, 180))
     design.revolute("j6", "wrist2", "tool", axis=((w2_x, w_y, 0), (0, 0, 1)), limits=(-360, 360))
     design.slider("grip_l", "tool", "finger_l", axis=((0, 0, 0), (1, 0, 0)), limits=(0, grip_stroke))

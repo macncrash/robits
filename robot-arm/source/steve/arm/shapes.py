@@ -1,4 +1,5 @@
 """Small CadQuery helpers: solids placed directly in the design frame (mm)."""
+import math
 import cadquery as cq
 
 V = cq.Vector
@@ -27,6 +28,38 @@ def fuse(*solids):
     for s in solids[1:]:
         out = out.fuse(s)
     return out.clean()
+
+
+def fillet_seams(fused, parts, r, keep=None):
+    """Fillet the edges where `parts` meet in `fused` (edges that none of the parts had on its own);
+    keep(edge) narrows them, e.g. to the outside seam."""
+    def key(e):
+        c = e.Center()
+        return round(c.x, 2), round(c.y, 2), round(c.z, 2), round(e.Length(), 2)
+    old = {key(e) for p in parts for e in p.Edges()}
+    seams = [e for e in fused.Edges() if key(e) not in old and (keep is None or keep(e))]
+    # Add the seam edges one at a time, keeping each one the kernel can round cleanly with the others:
+    # a valid solid, a finite area, about the same volume and no bulge past the unfilleted part.
+    vol, area, bb = fused.Volume(), fused.Area(), fused.BoundingBox()
+
+    def sane(s):
+        if not s.isValid():
+            return False
+        a, v, b = s.Area(), s.Volume(), s.BoundingBox()
+        return (math.isfinite(a) and 0.8 * area < a < 1.2 * area and abs(v - vol) < 0.02 * vol
+                and b.xmin > bb.xmin - 1 and b.ymin > bb.ymin - 1 and b.zmin > bb.zmin - 1
+                and b.xmax < bb.xmax + 1 and b.ymax < bb.ymax + 1 and b.zmax < bb.zmax + 1)
+
+    done, out = [], fused
+    for e in seams:
+        try:
+            trial = fused.fillet(r, done + [e])
+        except Exception:
+            continue
+        if sane(trial):
+            out = trial
+            done.append(e)
+    return out, len(done), len(seams)
 
 
 def rot_y(solid, pivot, degrees):

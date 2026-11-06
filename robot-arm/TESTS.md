@@ -1,7 +1,8 @@
 # Robot arm: stress, vibration and fit tests
 
-Every test here was run in STEVE (simulation studies and design checks) on the arm design, revision 5.
+Every test here was run in STEVE (simulation studies and design checks) on the arm design, revision 11.
 The studies live in the design's Simulate workspace and the checks in `source/steve/arm/checks.py`.
+Earlier revisions' numbers are kept where they show what a fix changed.
 
 ## Load case
 
@@ -21,30 +22,41 @@ Supports are the face that bolts to the driving actuator's output, held fixed. M
 
 ## Stress and deflection (static)
 
-| Link | Mesh | Peak von Mises | Max deflection | Hand check | Margin to yield |
-|---|---|---|---|---|---|
-| Upper arm | 4 mm | 7.6 MPa | 0.081 mm | 3.7 MPa nominal, 0.065–0.07 mm | 36× |
-| Upper arm | 3 mm | 9.7 MPa | 0.082 mm | (refinement check) | 28× |
-| Forearm | 3.5 mm | 6.7 MPa | 0.038 mm | 3.0 MPa nominal | 41× |
-| Wrist 2 knuckle | 3 mm | 0.95 MPa | 0.0002 mm | 0.5 MPa nominal | ≫ 100× |
+Revision 10 rounded the tube-to-hub seams: a 4 mm fillet on the upper arm and 3 mm on the forearm.
 
-- The solver's force and moment balance closed to better than 3 × 10⁻⁸ in every run.
-- **Deflection is mesh-converged:** refining the upper arm from 4 mm to 3 mm changed it by 1 %.
-- **Peak stress is not mesh-converged.** It sits at the sharp, unfilleted joint between tube and hub, and
-  it rises as the mesh is refined (7.6 → 9.7 MPa). The nominal stress (3–4 MPa) is the meaningful
-  number. A real part needs a fillet there.
-- **The links are stiffness-limited, not strength-limited.** Even the worst peak is well over 25× below
-  yield. The forearm's peak rose from 5.0 to 6.7 MPa after the revision 5 trim, which added new sharp
-  edges.
+| Link | Geometry | Mesh | Peak von Mises | Max deflection | Hand check | Margin to yield |
+|---|---|---|---|---|---|---|
+| Upper arm | sharp seam (rev 5) | 4 mm | 7.6 MPa | 0.081 mm | 3.7 MPa nominal, 0.065–0.07 mm | 36× |
+| Upper arm | sharp seam (rev 5) | 3 mm | 9.7 MPa | 0.082 mm | (refinement check) | 28× |
+| **Upper arm** | **4 mm fillet (rev 10)** | 3 mm | **6.8 MPa** | **0.071 mm** | 3.7 MPa nominal, 0.065–0.07 mm | **41×** |
+| Forearm | sharp seam (rev 5) | 3.5 mm | 6.7 MPa | 0.038 mm | 3.0 MPa nominal | 41× |
+| **Forearm** | **3 mm fillet (rev 10)** | 2.5 mm | **10.3 MPa** | **0.038 mm** | 3.0 MPa nominal | **27×** |
+| Wrist 2 knuckle | unchanged | 3 mm | 0.95 MPa | 0.0002 mm | 0.5 MPa nominal | ≫ 100× |
+
+- The solver's force and moment balance closed to better than 1 × 10⁻⁸ in every run.
+- **Upper arm: the fillet did what it should.** The sharp-seam peak kept rising as the mesh was refined
+  (7.6 → 9.7 MPa), the mark of a stress singularity. With the 4 mm fillet the peak drops to 6.8 MPa and
+  sits on the fillet's toe, about 1.8× the nominal bending stress, a normal concentration factor for a
+  tube-to-hub joint. Deflection now matches the hand check.
+- **Forearm: the fillet only partly took.** The forearm tube is 80 mm wide but its hub only 70 mm, so
+  the tube is trimmed flat where it passes the J3 actuator. STEVE's kernel could round 9 of the 18 seam
+  edges cleanly; the ones it rejected run into those trimmed flats. The peak (10.3 MPa at the finer 2.5 mm mesh that the fillet's small faces needed) is now at a
+  trim corner right beside the fixed support, where a sharp corner meets a fully clamped face: a
+  singularity, not a real stress. Away from it the forearm sits at the 3 MPa nominal. Rounding those trim
+  corners properly needs the hub widened to the tube's 80 mm, which the J3 actuator's position doesn't allow
+  as modelled.
+- **The links are stiffness-limited, not strength-limited.** Every peak, real or singular, is more than
+  25× below yield.
 
 ## Vibration (modal)
 
 | Part | Support | First natural frequency | Hand check |
 |---|---|---|---|
-| Upper arm, link alone | Shoulder face fixed | 488 Hz | 499 Hz (cantilever tube, 2 % apart) |
+| Upper arm, link alone (rev 5, sharp seam) | Shoulder face fixed | 488 Hz | 499 Hz (cantilever tube, 2 % apart) |
+| Upper arm, link alone (rev 10, filleted) | Shoulder face fixed | 530 Hz | 499 Hz (6 % apart: the fillets stiffen the root, which the formula ignores) |
 
 This is the bare link. With the distal 13.6 kg lumped at the elbow and the stiffness from the static run
-(3.1 N/µm), the link's own contribution is about 76 Hz. In a real arm the gearboxes are much softer than
+(3.6 N/µm), the link's own contribution is about 81 Hz. In a real arm the gearboxes are much softer than
 these tubes, so the system's first mode would be set by joint stiffness: typically 10–20 Hz for a cobot
 of this size.
 
@@ -62,26 +74,31 @@ everywhere else.
 | Wrist-2 neck ran into the J5 actuator's front flange | overlap at rest | Neck changed to a 30 × 60 mm block within the hub's length |
 | J5 and J6 actuator housings touching | 0 mm (needs 1 mm) | J6 lowered 2 mm |
 
-**Revision 5:** nothing overlaps at rest or at the `flourish` pose (136 instance pairs). The only finding
-is a 0.06 mm³ contact between wrist 1 and J5 at `flourish`, a seated pair, which is numerical contact
-rather than interference.
+**Revision 11:** nothing overlaps at rest or at the `flourish` pose (136 instance pairs). The fillets
+added no new contacts. The only finding is a 0.06 mm³ contact between wrist 1 and J5, a seated pair,
+which is numerical contact rather than interference.
 
 ## Collisions across the range of motion
 
-| Study | What it checks | Revision 4 | Revision 5 |
-|---|---|---|---|
-| `pick_and_place` animation check | 48 samples of the animation | clear (2 pairs overlapping at rest) | clear, nothing at rest |
-| `pick_and_place_keys` | 12 key poses, near misses < 5 mm | 0 collisions | 0 collisions; closest 1–2 mm (designed gaps) |
-| `shoulder_elbow` | J2 × J3 grid, 20° steps over the limits | 35 of 204 collide | 0 of 132 collide |
-| `arm_pitch` | J2, J3, J4 random, 150 poses | 32 % collide | 9.3 % collide (95 % CI 5.6–15 %) |
+| Study | What it checks | Revision 4 | Revision 5 | Revision 11 |
+|---|---|---|---|---|
+| `pick_and_place` animation check | 48 samples of the animation | clear (2 pairs overlapping at rest) | clear | clear |
+| `pick_and_place_keys` | 12 key poses, near misses < 5 mm | 0 collisions | 0; closest 1–2 mm | 0; closest 0.5–2 mm (designed gaps) |
+| `shoulder_elbow` | J2 × J3 grid, 20° steps over the limits | 35 of 204 collide | 0 of 132 | 0 of 132 |
+| `arm_pitch` | J2, J3, J4 random, 150 poses (seed 1) | 32 % collide | 9.3 % (fingers into upper arm) | 0.7 %: 1 pose, J6 grazes the pedestal by 0.7 mm |
 
 - **Elbow (J3) limit.** It was ±160°. Between +40° and +130° the wrist folded into the shoulder actuator
   and upper arm, up to 65 mm deep. The limit is now **−160° to +30°**, and the J2 × J3 grid is clear
   across its whole range.
-- **Wrist pitch (J4), what's left.** With J4 at about +90° to +130°, the gripper fingers reach back into
-  the J3 actuator or the upper arm (up to 15.6 mm deep). That's a reach-back zone that depends on the
-  pose, so a hard limit isn't the right fix. Real cobots handle this with a software keep-out zone, or
-  J4 can be restricted to about −180° to +80° if that's acceptable.
+- **Wrist pitch (J4) limit.** In revision 5, with J4 at about +90° to +130°, the gripper fingers reached
+  back into the J3 actuator or the upper arm (up to 15.6 mm deep, 9.3 % of poses). A limit of +80°
+  (revision 10) cut that to one pose in 150: J4 at +72° with the elbow near its +30° stop, still 5.7 mm into
+  the upper arm. The limit is now **−180° to +60°**, and no pose in the sweep reaches back into the arm. The
+  pick-and-place motion uses J4 from −45° to +55°, so it is unaffected.
+- **What's left is the floor, not the arm.** The one colliding pose (J2 +91°, J3 +24°, J4 +53°) has the
+  arm reaching forward and down past its own base, and the J6 actuator touches the pedestal's top edge by
+  0.7 mm. That depends on the whole pose, not one joint, so it belongs in the controller's workspace
+  limits (a keep-out box around the pedestal and the bench), as on any real arm.
 
 ## What these tests don't cover
 

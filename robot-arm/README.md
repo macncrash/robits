@@ -27,7 +27,7 @@ Zero pose: upper arm vertical, forearm along +X, gripper pointing down.
 | J1 base | Z | (0, 0, 0) | ±180° | 140 × 100 |
 | J2 shoulder | Y | (0, 0, 300) | ±110° | 140 × 130 |
 | J3 elbow | Y | (0, 0, 725) | −160° to +30° | 120 × 110 |
-| J4 wrist pitch | Y | (400, 0, 725) | ±180° | 100 × 100 |
+| J4 wrist pitch | Y | (400, 0, 725) | −180° to +60° | 100 × 100 |
 | J5 wrist yaw | X | (·, 127, 725) | ±180° | 90 × 90 |
 | J6 tool roll | Z | (556, 127, ·) | ±360° | 90 × 85 |
 | Grip (2 coupled sliders) | ±X | — | 0–30 mm per finger | — |
@@ -76,16 +76,18 @@ blender -b -P source/blender/render_arm.py -- exports/stl/arm renders
 STEVE stress, vibration, fit and collision results are in [`TESTS.md`](TESTS.md). In short:
 
 - Every link is more than 25× below yield, carrying a 3 kg payload with the arm stretched out level.
-  Upper-arm deflection is 0.08 mm.
-- The upper arm on its own has its first natural frequency at 488 Hz (hand check: 499 Hz).
+  Upper-arm deflection is 0.07 mm.
+- The tube-to-hub seams are filleted (4 mm upper arm, 3 mm forearm). On the upper arm that took the peak
+  stress from a mesh-dependent 9.7 MPa to a settled 6.8 MPa.
+- The upper arm on its own has its first natural frequency at 530 Hz (hand check: 499 Hz).
 - The fit check found four interferences between links and actuators, now fixed.
-- The elbow limit was cut to +30°, after the collision studies showed the wrist folding into the shoulder.
-- With J4 at about +90° to +130°, the gripper can still reach back into the upper arm: that's left for a
-  software keep-out zone.
+- The elbow limit was cut to +30° and the wrist-pitch limit to +60°, after the collision studies showed
+  the wrist folding into the shoulder and the fingers reaching back into the upper arm.
+- In a random sweep of 150 poses, one has the J6 actuator touching the pedestal by 0.7 mm while reaching
+  down past the base. That's for the controller's workspace limits.
 
 ## Caveats
 
 This is a visual reverse-engineering, not a production design. It has no gearbox internals, bearings
 or torque sizing; the actuators are exterior shells. The stress checks in `TESTS.md` are linear-static
-estimates of the links only. The renders and video were made before the revision 5 fit fixes, which
-changed parts by a few millimetres.
+estimates of the links only. The renders and video are of revision 11, the version tested.

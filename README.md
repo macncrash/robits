@@ -17,6 +17,7 @@ Each project lives in its own folder with everything needed to open, view or reb
 | Cold saw | Separate machine: actuator + 20:1 worm gearbox turning a Ø250 HSS blade at 0–53 rpm, chop pivot, mitre turntable, vise, coolant, on a stand | [`lathe-kit/cold-saw/`](lathe-kit/cold-saw/) |
 | Vertical band saw | Separate machine: actuator + 5:1 timing belt, Ø250 wheels, 0–166 m/min blade speed, tilting table, on a stand | [`lathe-kit/band-saw/`](lathe-kit/band-saw/) |
 | Robot arm | Six-axis arm with claw gripper, built from six sizes of the joint actuator; joints, poses and a pick-and-place animation | [`robot-arm/`](robot-arm/) |
+| Icescape | Four-wheel ice rover for Antarctic sea ice and icy ground offworld: 4WD, four-wheel steer, two joint actuators per corner, KBM-17H01-C on a 48 V pack. [Belly-clearance video](icescape/analysis/belly-gap.mp4) | [`icescape/`](icescape/) |
 
 ## Tools
 

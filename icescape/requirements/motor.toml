@@ -1,0 +1,45 @@
+# Drive motor for the icescape rover. One per wheel, inside the joint-actuator shell.
+# Run: python3 tools/partsel/partsel.py icescape/requirements/motor.toml --detail
+title = "Icescape rover: frameless motor"
+category = "frameless-motors"
+
+[operating]
+speed_rpm = 900           # motor speed at continuous torque on 48 V (analysis/hand_calcs.py)
+peak_torque_nm = 5.9      # catalog peak the 25:1 hub is sized around
+bus_vdc = 48              # Antarctic battery pack. The shop tools use a high-voltage bus; this rover does not.
+
+[[check]]
+field = "stator_od_mm"
+max = 86
+why = "The linked joint shell is the 120 mm actuator. Its bore takes the KBM-17 stator and not a larger frame."
+
+[[check]]
+field = "stator_length_mm"
+max = 70
+why = "The shell is 110 mm long. The stator has to sit inside it with the 5:1 stage."
+
+[[check]]
+field = "cont_torque_nm"
+min = 2.0
+why = "About 42 N·m at the wheel through 25:1 at 0.81, the continuous tractive force in the hand calc."
+
+[[check]]
+field = "peak_torque_nm"
+min = "peak_torque_nm"
+why = "Short peaks for a sastrugi or a packed-snow grade."
+
+[[check]]
+field = "bus_vdc_needed"
+max = "bus_vdc"
+why = "Back-EMF at 900 rpm must stay under the 48 V pack. The B winding does not."
+
+[[check]]
+field = "winding_temp_max_c"
+min = 150
+why = "Cold-soaked starts and a closed shell. The winding rating has to have room above ambient."
+
+[[check]]
+field = "mass_kg"
+max = 1.2
+prefer = true
+why = "Eight motors. Lighter is better, and it is not a hard limit."

@@ -1,0 +1,24 @@
+# One traction motor per sprocket, ahead of an 80:1 final drive.
+# Run: python3 tools/partsel/partsel.py crawler-transporter/requirements/motor.toml --detail
+title = "Crawler transporter: traction motor"
+category = "frameless-motors"
+
+[operating]
+speed_rpm = 3342        # motor speed at 10 km/h with the 80:1 drive (analysis/hand_calcs.py)
+peak_torque_nm = 120.5  # firm ground plus a 10% grade, per motor, at 0.90
+bus_vdc = 700           # a traction bus. The 48 V rover pack is a different machine.
+
+[[check]]
+field = "cont_torque_nm"
+min = 49.6
+why = "Firm ground, Crr 0.07, at 10 km/h. Each motor holds its half through 80:1 at 0.90."
+
+[[check]]
+field = "peak_torque_nm"
+min = "peak_torque_nm"
+why = "The same road plus a 10% grade. Soft ground at Crr 0.15 sits between these two."
+
+[[check]]
+field = "bus_vdc_needed"
+max = "bus_vdc"
+why = "Back-EMF at 3342 rpm has to stay under the traction bus."
